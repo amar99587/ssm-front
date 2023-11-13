@@ -110,7 +110,7 @@ const create = async () => {
   if (name.value) {
     loading.value = true;
     const result = await api.post("/api/schools/create", { name: name.value });
-    router.push("/school/" + result.data.school_code);
+    router.push(`/school/${result.data.school_code}/dashboard`);
   }
 };
 
