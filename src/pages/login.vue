@@ -36,7 +36,7 @@ const login = async (provider) => {
         user = await api.get("/api/users/login/google/"+ response.access_token);
         break;
     }
-    console.log(user.data);
+    console.log('user.data : ', user.data);
     store.commit("set", {key: "user", value: user.data});
     router.push('/account');
   } catch (error) {
