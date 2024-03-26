@@ -32,9 +32,8 @@ const login = async (provider) => {
   try {
     switch (provider) {
       case "google":
-        // const response = await googleTokenLogin(); 
-        // user = await api.get("/api/users/login/google/"+ response.access_token);
-        user = await api.get("/api/users/login/google/ya29.a0Ad52N3_cFhFs6aDNACDkqkIPLrFoy4QuPjIXd1k9Pt_QK6Ffi3FnvsN30wsF81EXYIT8_Oyuuo-5sLwZDrP8GJAUcui8KXJh4cb3HaD6tTn5p-G2JUBRGFEh-Yf-ciHdpZqlClxSLbTHfE9tSRB_m2mmzhEIGimh_fMaCgYKAXASARISFQHGX2MiL9pkIj5R25uY58ioosPsyQ0170");
+        const response = await googleTokenLogin(); 
+        user = await api.get("/api/users/login/google/"+ response.access_token);
         break;
     }
     console.log(user.data);
