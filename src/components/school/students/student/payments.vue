@@ -28,7 +28,7 @@
         <h5 v-for="(payment, index) in payments" :key="index" @click="more == payment.uid ? more = false : more = payment.uid"
           class="grid grid-cols-4 gap-2 bg-v bg-v-hover rounded-v py-2 cursor-pointer smooth">
           <div v-if="more != payment.uid" dir="ltr" class="flex-between gap-1 col-span-2 px-2">
-            <a class="min-w-fit">{{ payment.quantity }}</a>-
+            <a class="min-w-fit">{{ payment.quantity }}</a>*
             <a dir="auto" class="w-full truncate">{{ payment.course_name }}</a>
           </div>
           <div v-if="more != payment.uid" class="truncate text-center px-1">{{ payment.total }} DZD</div>

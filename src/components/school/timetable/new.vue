@@ -6,7 +6,7 @@
           <a v-if="getting && courses.length" class="animate-pulse">...</a>
           <h6 v-else-if="!getting && courses.length" class="mini-text">: choose the {{!timetable.course ? "course" : "time"}}</h6>
         </h4>
-        <icon-app v-if="loading" icon="svg-spinners:ring-resize" />
+        <!-- <icon-app v-if="loading" icon="svg-spinners:ring-resize" /> -->
       </div>
       <div v-if="!timetable.course" class="flex-between gap-4">
         <!-- <router-link

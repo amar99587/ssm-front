@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div v-if="search.length" class="h-full space-y-4 overflow-y-auto">
+    <div v-if="timetable.length" class="h-full space-y-4 overflow-y-auto">
       <div v-for="(courses, index) in second_array" class="grid gap-2">
         <div class="flex-between gap-4">
           <h3 class="font-medium min-w-fit">
@@ -49,6 +49,7 @@
         <h6 v-else class="h-full flex-center">no data to display</h6>
       </div>
     </div>
+    <h6 v-else-if="getting && !timetable.length" class="h-full flex-center">loading...</h6>
     <h6 v-else class="h-full flex-center">no data to display</h6>
   </div>
 </template>

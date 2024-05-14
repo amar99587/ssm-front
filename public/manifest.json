@@ -1,6 +1,6 @@
 {
-    "name": "SSM WEBAPP",
-    "short_name": "SSM APP",
+    "name": "ProEcole",
+    "short_name": "ProEcole",
     "description": "small school management software as a service as a web application",
     "start_url": "/",
     "display": "standalone",

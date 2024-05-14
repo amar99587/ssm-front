@@ -119,7 +119,7 @@ const query = ref({
     course: "",
 });
 
-const payments = ref(store.state.payments);
+const payments = ref([]); //store.state.payments
 
 const search = async (first) => {
   try {

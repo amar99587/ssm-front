@@ -19,10 +19,10 @@
       </div>
     </div>
     <div class="hidden sm:grid gap-1 min-h-[84px]">
-      <a href="https://ssm-website.onrender.com/fr/index.html" target="_blank" title="Contact us" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
+      <a href="https://proecole.com/fr/index.html" target="_blank" title="Contact us" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
         <icon-app icon="fluent:chat-12-filled" />
       </a>
-      <a href="https://ssm-website.onrender.com/fr/index.html" target="_blank" title="Help" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
+      <a href="https://proecole.com/fr/index.html" target="_blank" title="Help" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
         <icon-app icon="fluent:question-circle-12-filled" />
       </a>
       <!-- <div title="open/close nav bar" class="w-10 h-10 hover:bg-v hidden sm:flex-center rounded-v cursor-pointer smooth">

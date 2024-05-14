@@ -26,14 +26,14 @@
             <btn-app text="link" @click="link()" icon="fluent:add-12-filled" :loading="loading" dark
                 class="min-w-fit mx-auto" :disabled="!isCodeValid" />
 
-            <h6 class="text-center mini-text">
+            <!-- <h6 class="text-center mini-text">
                 <a class="font-bold">First</a>, enter your user code in the entry above <br>
                 for example: your user code is {{ $store.state.user.code.toUpperCase() }}, <br>
                 you can found it on the Account page. <br>
                 <a class="font-bold">Secondly</a>, give your user the permissions you want to. <br>
                 <a class="font-bold">Finnaly</a>, click " Link " to make requist to your user.
                 need help? click <router-link to="/help" class="link">here</router-link>
-            </h6>
+            </h6> -->
 
             <h6 class="text-center mini-text">the user also need to added your school <br>to complete this operation
                 <br> need help? click <router-link to="/help" class="link">here</router-link></h6>

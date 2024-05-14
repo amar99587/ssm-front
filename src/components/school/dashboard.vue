@@ -3,8 +3,8 @@
         <div class="text-pro">dashboard</div>
         <div class="grid gap-4 text-center mx-auto">
             <h2 class="tracking-[.0125rem] ml-[.0125rem]">{{school.name}}</h2>
-            <h5 @click="copy(school.code)">
-                <a class="tracking-[.125rem] ml-[.125rem] font-medium uppercase">{{ school.code }}</a>
+            <h5 @click="copy(school.code.toUpperCase())">
+                <a class="tracking-[.125rem] ml-[.125rem] font-medium uppercase cursor-pointer">{{ school.code }}</a>
                 <br> 
                 <h6 class="mini-text mt-2 cursor-pointer">tap here to copy school code</h6>
             </h5>
@@ -23,7 +23,7 @@
             </div>
             <h6 v-else class="h-full flex-center">no data to display</h6>
         </div>
-        <h6 v-else class="text-center">loading...</h6>
+        <h6 v-else class="mt-16 text-center">loading...</h6>
     </div>
 </template>
 

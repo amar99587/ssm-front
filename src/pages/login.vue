@@ -1,6 +1,6 @@
 <template>
   <div v-bind="$attrs" class="hidden" />
-  <div class="w-full h-full bg-White rounded-v flex flex-col sm:flex-row gap-4 border-pro">
+  <div class="w-full h-full bg-White rounded-v flex flex-col sm:flex-row gap-4">
     <div class="w-full min-h-[232px] grid place-content-center mt-12 sm:mt-0">
       <div class="w-full flex flex-col gap-4">
         <div class="text-center sm:text-start grid gap-1">

@@ -152,7 +152,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.auth == "required") {
     const school_code = to.params.school;
     const routeRule = to.matched[1]?.meta?.rule;
-    const allowed = store.state.school?.link?.rules[routeRule];
+    const allowed = await store.state.school?.link?.rules[routeRule];
     !user ? next({ path: "/login" }) : (
       routeRule ? 
         (
@@ -172,5 +172,6 @@ router.beforeEach(async (to, from, next) => {
     next();
   }
 });
+
 
 export default router;

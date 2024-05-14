@@ -6,7 +6,7 @@
         <h2 class="text-pro">account</h2>
         <h6 @click="logout" title="click here to logout from your account" class="font-medium link">logout</h6>
       </div>
-      <div @click="copy(user.code)" class="grid gap-2 text-center mx-auto my-4 cursor-pointer">
+      <div @click="copy(user.code.toUpperCase())" class="grid gap-2 text-center mx-auto my-4 cursor-pointer">
         <h2 class="tracking-[.25rem] ml-[.25rem] uppercase">{{ user.code }}</h2>
         <h6 class="mini-text">tap here to copy your code</h6>
       </div>
@@ -66,7 +66,7 @@
         </div>
         <h6 class="text-center mx-auto mini-text">
           For any questions or more informations, don't hesitate to 
-          <a href="https://ssm-website.onrender.com/fr/index.html" target="_blank" class="link">reach out to us</a>. 
+          <a href="https://proecole.com/fr/index.html" target="_blank" class="link">reach out to us</a>. 
           <br class="hidden sm:block"> Your satisfaction is our priority!
         </h6>
       </div>

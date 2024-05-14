@@ -1,8 +1,7 @@
 <template>
     <nav dir="ltr" class="bg-White h-[50px] p-4 flex-between rounded-v z-50 -border-pro">
-        <img @click="$router.push('/')" name="Logo" src="../assets/img/logo.png" class="h-8">
-        <!-- <img @click="$router.push('/')" name="Logo" src="../assets/logo.png" class="h-4 dark:hidden">
-        <img @click="$router.push('/')" name="Logo" src="../assets/logo-white.png" class="h-4 hidden dark:block"> -->
+        <img @click="$router.push('/')" name="Logo" src="../assets/img/logo.png" class="h-5 dark:hidden">
+        <img @click="$router.push('/')" name="Logo" src="../assets/img/white-logo.png" class="h-5 hidden dark:block">
         <div dir="rtl" class="hidden sm:flex-between gap-6">
             <icon-app @click="menu = !menu" :icon="user ? 'fluent:person-24-filled' : 'ep:more-filled'" size="24"
                 class="w-5 h-5 cursor-pointer" name="Account" />
@@ -32,11 +31,11 @@
                                 <h5>Install App</h5>
                                 <icon-app icon="fluent:arrow-download-16-filled" size="24" />
                             </button>
-                            <a href="https://ssm-website.onrender.com/fr/index.html" target="_blank" class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
+                            <a href="https://proecole.com/fr/index.html" target="_blank" class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
                                 <h5>contact us</h5>
                                 <icon-app icon="fluent:chat-12-filled" size="24" />
                             </a>
-                            <a href="https://ssm-website.onrender.com/fr/index.html" target="_blank" class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
+                            <a href="https://proecole.com/fr/index.html" target="_blank" class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
                                 <h5>help</h5>
                                 <icon-app icon="fluent:question-circle-12-filled" size="24" />
                             </a>
@@ -112,11 +111,11 @@
                                 <h5>Install App</h5>
                                 <icon-app icon="fluent:arrow-download-16-filled" size="24" />
                             </button>
-                            <a href="https://ssm-website.onrender.com/fr/index.html" target="_blank" class="bg-v p-2 flex-between rounded-v">
+                            <a href="https://proecole.com/fr/index.html" target="_blank" class="bg-v p-2 flex-between rounded-v">
                                 <h5>contact us</h5>
                                 <icon-app icon="fluent:chat-12-filled" size="24" />
                             </a>
-                            <a href="https://ssm-website.onrender.com/fr/index.html" target="_blank" class="bg-v p-2 flex-between rounded-v">
+                            <a href="https://proecole.com/fr/index.html" target="_blank" class="bg-v p-2 flex-between rounded-v">
                                 <h5>help</h5>
                                 <icon-app icon="fluent:question-circle-12-filled" size="24" />
                             </a>
