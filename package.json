@@ -12,7 +12,6 @@
     "dev": "npm run serve"
   },
   "dependencies": {
-    "@chargily/chargily-pay": "^2.0.0",
     "@iconify/vue": "^4.1.1",
     "autoprefixer": "^10",
     "axios": "^1.5.1",

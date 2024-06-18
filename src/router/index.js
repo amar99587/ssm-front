@@ -100,11 +100,6 @@ const routes = [
         component: () => import("../components/school/settings/information.vue")
       },
       {
-        path: "settings/information/checkout",
-        name: "checkout",
-        component: () => import("../components/school/settings/checkout.vue")
-      },
-      {
         path: ":pathMatch(.*)*",
         name: "404",
         component: () => import("../pages/404.vue")
