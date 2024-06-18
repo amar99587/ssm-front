@@ -1,9 +1,9 @@
 // import store from '../store/index';
 // console.log(store.state.user?.time);
 exports.toDate = (e, type = 'date') => {
-    // console.log(e);
-    const newDate = e ? new Date(e) : new Date();
+    const newDate = e && e != 'now' ? new Date(e) : new Date();
     let date = {
+        milliseconds: newDate.getTime(),
         year: newDate.getFullYear(),
         month: String(newDate.getMonth()+1).padStart(2,'0'),
         day: String(newDate.getDate()).padStart(2,'0'),
@@ -11,6 +11,7 @@ exports.toDate = (e, type = 'date') => {
         minutes: String(newDate.getMinutes()).padStart(2,'0'),
     };
     const types = {
+        milliseconds: date.milliseconds,
         minutes: date.minutes,
         hours: date.hours,
         day: date.day,

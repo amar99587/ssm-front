@@ -6,7 +6,7 @@
       </div>
       <div class="space-y-4">
         <h5 class="flex-between gap-4 rounded-v smooth">
-          <router-link :to="`/school/${school.code}/settings/users`" class="btn bg-v bg-v-hover">
+          <router-link v-if="link?.type != 'owner' && ($store.getters.permission('settings:users:unlink') || $store.state.user.code == link?.user_code)" :to="`/school/${school.code}/settings/users`" class="btn bg-v bg-v-hover">
             <icon-app icon="ion:chevron-back-outline" />
           </router-link>
           <h4 class="w-full bg-v rounded-v p-1.5 rounded-v text-center truncate">{{ route.params.user.toUpperCase() }}</h4>
@@ -61,7 +61,7 @@ const link = ref(null);
 const rulesGroup = (e) => {
   const originalRules = {};
   for (const key in require('@/assets/json/school-rules.json')) {
-    originalRules[key] = e[key];
+    originalRules[key] = e[key] == true;
   }
   const rules = Object.entries(originalRules).reduce((acc, [key, value]) => {
     const [group] = key.split(':');
@@ -69,20 +69,15 @@ const rulesGroup = (e) => {
     acc[group][key] = value;
     return acc;
   }, {});
-  return {
-    students: rules.students,
-    courses: rules.courses,
-    timetable: rules.timetable,
-    finance: rules.finance,
-    settings: rules.settings,
-  };
+  
+  return rules;
 };
 const rulesExplanation = ref(require('@/assets/json/school-rules-explanation.json'));
 
 onMounted(async () => {
   try {
     getting.value = true;
-    const result = await api.get(`/api/link/${route.params.user}/${school.code}`);
+    const result = await api.get(`/v1/link/${route.params.user}/${school.code}`);
     if (result.data.exists) {
       link.value = result.data.data;
       getting.value = false;
@@ -98,7 +93,7 @@ const update = async () => {
   if (!loading.value && window.confirm("Do you want to edit this user ?")) {
     try {
       loading.value = "update";
-      const result = await api.post(`/api/link/${route.params.user}/${school.code}`, link.value.rules);
+      const result = await api.post(`/v1/link/${route.params.user}/${school.code}`, link.value.rules);
       console.log(result.data);
       router.go(-1);
     } catch (error) {
@@ -111,9 +106,8 @@ const unlink = async () => {
   if (!loading.value && window.confirm("Do you want to unlink this user ?")) {
     try {
       loading.value = "unlink";
-      const result = await api.delete(`/api/link/${route.params.user}/${school.code}`);
-      console.log(result.data);
-      router.go(-1);
+      const result = await api.delete(`/v1/link/${route.params.user}/${school.code}`);
+      router.push('/account');
     } catch (error) {
       console.log(error);
     }

@@ -3,7 +3,7 @@
         <div class="space-y-4 min-h-[96px]">
             <h4 class="font-bold">new user</h4>
             <input-app :value="user.toUpperCase()" @update="user = $event" icon="fluent:person-24-filled"
-                placeholder="SDF-4P6-W5U" center maxlength="11" />
+                placeholder="Enter the user code to link with your school." center maxlength="11" />
         </div>
 
         <div class="h-full space-y-4 overflow-y-auto">
@@ -112,7 +112,7 @@ const link = async () => {
     if (isCodeValid && window.confirm("Do you want to link a new user")) {
         try {
             loading.value = true;
-            const result = await api.post("/api/link/new", { user: user.value, school: school.code, rules: rules.value });
+            const result = await api.post("/v1/link/new", { user: user.value, school: school.code, rules: rules.value });
             console.log(result.data);
             if (result?.data?.user_code) {
                 router.push(`/school/${school.code}/settings/users?uid=${result.data.user_code}`);

@@ -40,16 +40,20 @@ export default createStore({
       const value = state[payload.key];
       const index = value.findIndex((obj) => obj[id] == payload.value[id]);
       index == -1 ? value.push(payload.value) : value[index] = payload.value;
-      state[payload.key] = value.filter(item => item.created_at).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      state[payload.key] = value.filter(item => item.created_at).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     },
     // ... other mutations
     resetApp: (state) => {
-      state.user = "";
+      state.user = null;
+      state.school = {};
       state.schools = [];
       sessionStorage.clear();
+      for (const key in school) {
+        state[key] = school[key];
+      }
     },
     resetSchool: (state) => {
-      console.log(state);
+      state.school = {};
       for (const key in school) {
         state[key] = school[key]; // Or simple copy if not needed
       }

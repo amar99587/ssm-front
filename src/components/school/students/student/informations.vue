@@ -1,45 +1,57 @@
 <template>
-    <div dir="auto" class="bg-White rounded-v flex-1 flex flex-col gap-4 p-4"> 
+    <div dir="auto" class="bg-White rounded-v flex-1 flex flex-col gap-4 p-4">
         <div class="min-h-[24px] flex-between">
-            <h4  class="font-bold">informations <a v-if="getting && student.uid" class="animate-pulse">...</a></h4>
-            <icon-app v-if="!data.student.isNew" @click="compressed = !compressed" :icon="compressed ? 'fluent:caret-up-16-filled' : 'fluent:caret-down-16-filled'" class="block sm:hidden cursor-pointer" />
-            <icon-app @click="emits('zoom')" :icon="!data.zoom ? 'ic:round-zoom-out-map' : 'ic:round-zoom-in-map'" class="hidden sm:block cursor-pointer" />
+            <h4 class="font-bold">informations <a v-if="getting && student.uid" class="animate-pulse">...</a></h4>
+            <icon-app @click="compressed = !compressed"
+                :icon="compressed ? 'fluent:caret-up-16-filled' : 'fluent:caret-down-16-filled'"
+                class="block sm:hidden cursor-pointer" />
+            <icon-app @click="emits('zoom')" :icon="!data.zoom ? 'ic:round-zoom-out-map' : 'ic:round-zoom-in-map'"
+                class="hidden sm:block cursor-pointer" />
         </div>
-        <h6 v-if="!data.student.isNew && getting && !student.uid" class="h-full flex-center pb-2">LOADING...</h6>
+        <h6 v-if="getting && !student.uid" class="h-full flex-center pb-2">LOADING...</h6>
         <div v-else class="sm:block h-full overflow-y-auto" :class="{ 'hidden': !compressed, 'block': compressed }">
-            <form @submit.prevent="submitForm" class="flex flex-col sm:grid sm:grid-cols-2 gap-4" autocomplete="no">
+            <form @submit.prevent="submitForm" class="flex flex-col sm:grid sm:grid-cols-2 gap-4">
                 <div class="space-y-2">
-                    <input-app :readonly="data.student.isNew ? false : !edit" required autocomplete="no" :value="student.name" @update="student.name = $event" label="full name" icon="fluent:person-24-filled" placeholder="Laziri Umar" />
+                    <input-app :readonly="!edit" required autocomplete="no" :value="student.name"
+                        @update="student.name = $event" label="fullname" icon="fluent:person-24-filled"
+                        placeholder="student fullname" />
                 </div>
                 <div class="space-y-2">
-                    <input-app :readonly="data.student.isNew ? false : !edit" required autocomplete="no" :value="data.student.isNew ? student.birthday : $toDate(student.birthday)" @update="student.birthday = $event" label="birthday" icon="fluent:calendar-24-filled" type="date" />
+                    <input-app :readonly="!edit" required autocomplete="no" :value="$toDate(student.birthday)"
+                        @update="student.birthday = $event" label="birthday" icon="fluent:calendar-24-filled"
+                        type="date" />
                 </div>
                 <div class="space-y-2">
-                    <input-app :readonly="data.student.isNew ? false : !edit" autocomplete="no" :value="student.email" @update="student.email = $event" label="email" icon="fluent:mail-24-filled" type="email" placeholder="laziriamar@example.com" />
+                    <input-app :readonly="!edit" autocomplete="no" :value="student.email"
+                        @update="student.email = $event" label="email" icon="fluent:mail-24-filled" type="email"
+                        placeholder="student email adress" />
                 </div>
                 <div class="space-y-2">
-                    <input-app :readonly="data.student.isNew ? false : !edit" autocomplete="no" :value="student.phone" @update="student.phone = $event" label="phone" icon="fluent:call-24-filled" type="tel" placeholder="0698467691" />
+                    <input-app :readonly="!edit" autocomplete="no" :value="student.phone"
+                        @update="student.phone = $event" label="phone" icon="fluent:call-24-filled" type="tel"
+                        placeholder="student phone number" />
                 </div>
-                <h6 v-if="student.created_at" class="col-span-2 text-center mt-2 first-letter:lowercase">created at {{ $toDate(student.created_at, 'timestamp') }}</h6>
-                <button @click="!edit && data.student.isNew ? create(student) : update(student)" class="hidden" />
+                <h6 v-if="student.created_at" class="col-span-2 text-center mt-2 first-letter:lowercase">created at {{
+                $toDate(student.created_at, 'timestamp') }}</h6>
+                <button @click="!edit && update(student)" class="hidden" />
             </form>
         </div>
-        <div v-if="$store.getters.permission('students:information:edit') && (data.student.isNew || (edit && student.uid))" class="gap-4 min-h-[36px]" :class="{ 'hidden': !compressed, 'flex': compressed, 'justify-end': data.student.isNew, 'justify-between items-end': !data.student.isNew }">
-            <h6 v-if="!data.student.isNew" @click="edit = false" class="cursor-pointer">cancel edit</h6>
-            <btn-app @click="data.student.isNew ? create(student) : update(student)" :text="data.student.isNew ? 'create' : 'save'" dark :loading="loading" icon="fluent:add-12-filled" />
+        <div v-if="$store.getters.permission('students:information:edit') && edit"
+            class="gap-4 min-h-[36px] justify-between items-end" :class="{ 'hidden': !compressed, 'flex': compressed }">
+            <h6 @click="edit = false" class="cursor-pointer">cancel edit</h6>
+            <btn-app @click="update(student)" text="save" dark :loading="loading" icon="fluent:add-12-filled" />
         </div>
-        <h6 v-if="$store.getters.permission('students:information:edit') && compressed && !getting && !edit && !data.student.isNew" @click="edit = true" class="w-full min-h-[16px] text-center cursor-pointer">edit</h6>
+        <h6 v-if="$store.getters.permission('students:information:edit') && compressed && !getting && !edit"
+            @click="edit = true" class="w-full min-h-[16px] text-center cursor-pointer">edit</h6>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import api from '@/plugins/axios.js';
-import { useRouter, useRoute } from 'vue-router';
-import { validated } from '@/utilities/validator';
+import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
-const router = useRouter();
 const route = useRoute();
 const store = useStore();
 
@@ -51,59 +63,42 @@ const compressed = ref(true);
 const getting = ref(false);
 const loading = ref(false);
 
-const student = ref({
-    school: data.school.code,
-    name: null,
-    birthday: null,
-    email: null,
-    phone: null,
-});
-store.state.students.flat().find((e) => e.uid == data.student.uid ? student.value = e : false );
+const student = ref({});
+
+const getStudent = async () => {
+    try {
+        getting.value = true;
+        console.log('local student', student.value);
+        const result = await api.get("/v1/students/get/" + data.student.uid);
+        student.value = result.data;
+        console.log('Server Student : ', student.value.uid);
+        store.commit("add", { key: "students", value: result.data });
+        getting.value = false;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 onMounted(async () => {
-    if (!data.student.isNew) {
-        try {
-            getting.value = true;
-            const result = await api.get("/api/students/get/" + data.student.uid);
-            student.value = result.data;
-            store.commit("set", {key: "student", value: result.data});
-            store.commit("add", {key: "students", value: result.data});
-            getting.value = false;
-        } catch (error) {
-            console.log(error);
-        }
-    } else {
-        student.value.name = route.query.name;
-        student.value.birthday = route.query.birthday;
-        student.value.email = route.query.email;
-        student.value.phone = route.query.phone;
-    }
+  const { students } = store.state;
+  const storedStudent = students.find(i => i.uid === data.student.uid);
+
+  if (storedStudent) {
+    student.value = storedStudent;
+    if (data.student.isNew) return;
+  }
+
+  await getStudent();
 });
 
-const create = async (e) => {
-    if (store.getters.permission('students:information:edit') && validated({arr: [e.school, e.name, e.birthday]}) && window.confirm("Do you want to create a new student")) {
+const update = async e => {
+    if (e.school && e.name && e.birthday && window.confirm("Do you want to update student information")) {
         try {
             loading.value = true;
-            const result = await api.post("/api/students/create", e);
-            student.value = result.data;
-            store.commit("add", {key: "students", value: result.data});
-            router.push(`/school/${data.school.code}/students/${result.data.uid}`);
-            loading.value = false;
-            edit.value = false;
-        } catch (error) {
-            console.log(error.message);
-        }
-    }
-};
-
-const update = async (e) => {
-    if (e.school && e.name && e.birthday && window.confirm("Do you want to update current student")) {
-        try {
-            loading.value = true;
-            const result = await api.post("/api/students/update", e);
+            const result = await api.post("/v1/students/update", e);
             // result.data.birthday = toDate(result.data.birthday);
             student.value = result.data;
-            store.commit("add", {key: "students", value: result.data});
+            store.commit("add", { key: "students", value: result.data });
             loading.value = false;
             edit.value = false;
         } catch (error) {

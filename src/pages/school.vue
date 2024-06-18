@@ -3,9 +3,9 @@
     <div class="h-full">
       <div class="grid grid-flow-col sm:grid-flow-row gap-1 overflow-auto">
         <router-link 
-          v-for="({ path, name, icon }, index) in nav" :key="index" :to="`/school/${code}/${path}`"
+          v-for="({ path, name, icon }, index) in nav" :key="index" :to="`/school/${school.code}/${path}`"
           class="w-10 h-10 hover:bg-v rounded-v cursor-pointer smooth"
-          :class="{ 'hidden': index ? !school.link?.rules[path + ':access'] : false, 'bg-v': route.path.startsWith(`/school/${code}/${path}`) }"
+          :class="{ 'hidden': school.link?.type == 'owner' ? false : (index ? !school.link?.rules[path + ':access'] : false), 'bg-v': route.path.startsWith(`/school/${school.code}/${path}`) }"
           :title="name"
         >
           <icon-app :icon="icon" class="h-full mx-auto" />
@@ -18,16 +18,19 @@
         </router-link>
       </div>
     </div>
-    <div class="hidden sm:grid gap-1 min-h-[84px]">
+    <div class="hidden sm:grid gap-1 min-h-[40px]"> <!--  40px = 172px - (44px * 3) -->
+      <!-- <a href="https://proecole.com/fr/index.html" target="_blank" title="Help" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
+        <icon-app icon="fluent:question-circle-12-filled" />
+      </a> -44px
       <a href="https://proecole.com/fr/index.html" target="_blank" title="Contact us" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
         <icon-app icon="fluent:chat-12-filled" />
-      </a>
-      <a href="https://proecole.com/fr/index.html" target="_blank" title="Help" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
-        <icon-app icon="fluent:question-circle-12-filled" />
-      </a>
-      <!-- <div title="open/close nav bar" class="w-10 h-10 hover:bg-v hidden sm:flex-center rounded-v cursor-pointer smooth">
+      </a> -44px
+      <a href="https://proecole.com/fr/index.html" target="_blank" title="Report a bug" class="w-10 h-10 hover:bg-v flex-center rounded-v cursor-pointer smooth">
+        <icon-app icon="solar:bug-minimalistic-bold" />
+      </a> -44px -->
+      <div title="open/close nav bar" class="w-10 h-10 hover:bg-v hidden sm:flex-center rounded-v cursor-pointer smooth">
         <icon-app class="flip-if-rtl" icon="fluent:chevron-right-12-filled" />
-      </div> -->
+      </div>
     </div>
   </nav>
   <router-view v-if="school" v-bind="$attrs" :school="school" class="-border-pro" />
@@ -35,8 +38,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import api from '@/plugins/axios.js';
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router';
 import store from '@/store';
 
@@ -69,6 +71,11 @@ const nav = ref([
     path: "finance"
   },
   {
+    icon: "majesticons:chart-pie",
+    name: "Statistics",
+    path: "statistics"
+  },
+  {
     icon: "fluent:settings-48-filled",
     name: "Settings",
     path: "settings"
@@ -76,22 +83,6 @@ const nav = ref([
 ]);
 
 const getting = ref(false);
-const code = route.params.school;
-const school = computed(() => store.state.schools.filter((i) => i.code == code)[0]);
 
-onMounted(async () => {
-  getting.value = "Loading...";
-  try {
-    const result = await api.get("/api/schools/get/" + code );
-    if (result.data.haveAccess) {
-      store.commit("add", {key: "schools", value: result.data.school});
-      store.commit("set", {key: "school", value: result.data.school});
-      getting.value = false;
-    } else {
-      getting.value = "You don't have access to this school";
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
+const school = computed(() => store.state.school);
 </script>

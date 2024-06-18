@@ -8,5 +8,5 @@ module.exports = defineConfig({
     msTileColor: "#e5e7eb",
     appleMobileWebAppCapable: "yes",
     appleMobileWebAppStatusBarStyle: "#ffffff",
-  },
+  }
 })

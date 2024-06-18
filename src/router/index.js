@@ -35,12 +35,6 @@ const routes = [
         component: () => import("../components/school/students/list.vue")
       },
       {
-        path: "students/new",
-        name: "new student",
-        meta: { rule: "students:create" },
-        component: () => import("../components/school/students/student/main.vue")
-      },
-      {
         path: "students/:student",
         name: "student",
         meta: { rule: "students:information:access" },
@@ -53,12 +47,6 @@ const routes = [
         component: () => import("../components/school/courses/list.vue")
       },
       {
-        path: "courses/new",
-        name: "new course",
-        meta: { rule: "courses:create" },
-        component: () => import("../components/school/courses/course.vue")
-      },
-      {
         path: "courses/:course",
         name: "course",
         meta: { rule: "courses:information:access" },
@@ -68,19 +56,19 @@ const routes = [
         path: "timetable",
         name: "timetable",
         meta: { rule: "timetable:access" },
-        component: () => import("../components/school/timetable/list.vue")
-      },
-      {
-        path: "timetable/new",
-        name: "new timetable",
-        meta: { rule: "timetable:create" },
-        component: () => import("../components/school/timetable/new.vue")
+        component: () => import("../components/school/timetable.vue")
       },
       {
         path: "finance",
         name: "finance",
         meta: { rule: "finance:access" },
         component: () => import("../components/school/finance.vue")
+      },
+      {
+        path: "statistics",
+        name: "statistics",
+        meta: { rule: "statistics:access" },
+        component: () => import("../components/school/statistics.vue")
       },
       {
         path: "settings",
@@ -112,6 +100,11 @@ const routes = [
         component: () => import("../components/school/settings/information.vue")
       },
       {
+        path: "settings/information/checkout",
+        name: "checkout",
+        component: () => import("../components/school/settings/checkout.vue")
+      },
+      {
         path: ":pathMatch(.*)*",
         name: "404",
         component: () => import("../pages/404.vue")
@@ -136,42 +129,60 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-
   var user = store.state.user;
-
+  
   if (user == null) {
     try {
-      const result = await api.get("/api/users/enter");
-      store.commit("set", {key: "user", value: result.data});
+      const result = await api.get("/v1/users/enter");
+      store.commit("set", { key: "user", value: result.data });
       user = result.data;
     } catch (error) {
       console.log(error);
     }
   }
-  
+
   if (to.meta.auth == "required") {
-    const school_code = to.params.school;
-    const routeRule = to.matched[1]?.meta?.rule;
-    const allowed = await store.state.school?.link?.rules[routeRule];
-    !user ? next({ path: "/login" }) : (
-      routeRule ? 
-        (
-          allowed ? 
-            next() 
-            : next(
-              allowed == false ? 
-                { path: "/404", query: { access: "rejected" } } 
-                : { path: `/school/${school_code}/dashboard` }
-            )
-        ) 
-        : next()
-    );
+    if (user && to.path.startsWith('/school')) {
+      var school = store.state.school;
+      const routeRule = to.matched[1]?.meta?.rule;
+      // console.log(to.query.refresh != 'true');
+      if ((to.params.school == school?.code) && school?.link && to.query.refresh != 'true') {
+        const allowed =  school.link.type != "owner" && routeRule ? school.link.rules[routeRule] : true;
+        if(school.license.end_left <= 0) {
+          next(`/account?subscription=${school.code}`);
+        } else if (!allowed) {
+          next("/404?access=rejected");
+        } else {
+          next();
+        }
+      } else {
+        try {
+          const result = await api.get("/v1/schools/get/" + (window.location.pathname.split('/')[2] || school.code));
+          if (result.data.haveAccess) {
+            school = result.data.school;
+            // console.log('school from server : ', school);
+            store.commit("set", { key: "school", value: school });
+            const allowed =  school.link.type != "owner" && routeRule ? school.link.rules[routeRule] : true;
+            if (allowed) {
+              school.license.end_left > 0 ? next() : next('/account?subscription=' + school.code);
+            } else {
+              next({ path: "/404", query: { access: "rejected" } });
+            }
+          } else {
+            next({ path: "/404", query: { access: "rejected" } });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    } else {
+      user ? next() : next({ path: "/login" });
+    }
   } else if (to.meta.auth == "hide") {
     user ? next({ path: "/account" }) : next();
   } else {
     next();
   }
 });
-
 
 export default router;

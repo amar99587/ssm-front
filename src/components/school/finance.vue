@@ -126,7 +126,7 @@ const search = async (first) => {
     first ? getting.value = true : loading.value = true;
     query.value.from = query.value.from || toDate() + 'T00:00';
     query.value.to = query.value.to || toDate() + 'T23:59';
-    const { data } = await api.post("/api/payments/get/school", query.value);
+    const { data } = await api.post("/v1/payments/get/school", query.value);
     payments.value = data;
     first ? getting.value = false : loading.value = false;
   } catch (error) {

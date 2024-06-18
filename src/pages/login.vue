@@ -33,7 +33,7 @@ const login = async (provider) => {
     switch (provider) {
       case "google":
         const response = await googleTokenLogin(); 
-        user = await api.get("/api/users/login/google/"+ response.access_token);
+        user = await api.get("/v1/users/login/google/"+ response.access_token);
         break;
     }
     console.log(user.data);

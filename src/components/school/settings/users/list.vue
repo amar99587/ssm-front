@@ -7,7 +7,7 @@
       </div>
 
       <div class="flex-between gap-4">
-        <router-link v-if="$store.getters.permission('settings:users:link')" :to="`/school/${school.code}/settings/users/new`" class="btn-mini">
+        <router-link v-if="store.getters.permission('settings:users:link')" :to="`/school/${school.code}/settings/users/new`" class="btn-mini">
           <icon-app icon="fluent:add-12-filled" class="w-3" />
         </router-link>
         <div class="w-full flex-between gap-4">
@@ -18,7 +18,7 @@
     </div>
 
     <h5 v-if="search.length" class="h-full space-y-4 overflow-y-auto">
-      <router-link v-for="{ code, status, data } in search" :to="$store.getters.permission('settings:users:rules:access') ? `/school/${school.code}/settings/users/${code}` : ''"
+      <router-link v-for="{ code, status, data } in search" :to="store.getters.permission('settings:users:rules:access') ? `/school/${school.code}/settings/users/${code}` : ''"
         class="flex-between bg-v bg-v-hover rounded-v py-2 cursor-pointer smooth" :class="{ 'mini-text': !data?.name }">
         <div class="min-w-[36px] flex-center mx-2">
           <icon-app icon="fluent:person-24-filled" />
@@ -59,7 +59,7 @@ const users = ref(store.state.users);
 onMounted(async () => {
   try {
     getting.value = true;
-    const result = await api.get("/api/schools/get/all/users/" + school.code);
+    const result = await api.get("/v1/schools/get/all/users/" + school.code);
     users.value = result.data;
     store.commit("set", { key: "users", value: result.data });
     getting.value = false;

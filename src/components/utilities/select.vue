@@ -12,7 +12,7 @@
         <select class="bg-transparent w-full placeholder:text-sm placeholder:tracking-normal truncate cursor-pointer" 
         @:change="readonly ? '' : emits('update', $event.target.value)" :value="value"
         >
-            <option disabled value="" class="text-gray-800">{{ selected || 'Select an option' }}</option>
+            <option disabled value class="text-gray-800">{{ placeholder || 'Select an option' }}</option>
             <option v-for="(option, index) in list" :value="option.value == undefined ? index : option.value" class="text-gray-800">{{ option.text == undefined ? option : option.text }}</option>
         </select>
     </div>
@@ -29,7 +29,7 @@
         subText: String | Boolean,
         subTextColor: String,
         list: Array,
-        selected: String,
+        placeholder: String,
     });
 
     const emits = defineEmits(["update"]);

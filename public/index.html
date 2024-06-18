@@ -5,17 +5,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="favicon.ico">
-    <title>ProEcole</title>
+    <title>Proecole</title>
   </head>
   <body>
     <noscript>
-      <strong>We're sorry but ProEcole doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>We're sorry but Proecole doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
     <script>
       if (localStorage.dark == 'true') document.querySelector("html").classList.add("dark");
       document.querySelector("html").lang = localStorage.language;
+      document.querySelector('html').setAttribute('dir', localStorage.language == 'ar' ? 'rtl' : 'ltr');
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll("input").forEach(e => e.setAttribute('autocomplete', 'off'));
+      });
     </script>
   </body>
 </html>

@@ -145,7 +145,7 @@ body {
   }
 
   .bg-g8, .bg-dark {
-    @apply bg-gray-800 dark:bg-gray-500 text-white ;
+    @apply bg-gray-800 dark:bg-gray-500 text-white;
   }
 
   .btn {

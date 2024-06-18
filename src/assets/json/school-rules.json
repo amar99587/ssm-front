@@ -19,6 +19,7 @@
   "timetable:create": false,
   "timetable:delete": false,
   "finance:access": false,
+  "statistics:access": false,
   "settings:access": false,
   "settings:information:edit": false,
   "settings:users:access": false,

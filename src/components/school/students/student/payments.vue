@@ -9,11 +9,9 @@
         :icon="!data.zoom ? 'ic:round-zoom-out-map' : 'ic:round-zoom-in-map'" class="hidden sm:block cursor-pointer" />
     </div>
 
-    <h6 v-if="data.student.isNew" class="h-full flex-center pb-2">you have to create student first</h6>
-    <h6 v-else-if="!localPayments.length && getting" class="h-full flex-center pb-2">LOADING...</h6>
+    <h6 v-if="!localPayments.length && getting" class="h-full flex-center pb-2">LOADING...</h6>
     <h6 v-else-if="!localPayments.length && !(query.course || query.total || query.created_at)"
-      class="h-full flex-center pb-2">no data to display</h6>
-
+      class="h-full flex-center pb-2">no payments to display</h6>
     <form @submit.prevent="submitForm" v-else-if="localPayments.length" class="min-h-[36px] grid-cols-4 gap-2"
       :class="{ 'hidden sm:grid': !compressed, 'grid': compressed }">
       <input-app :value="query.course_name" @update="query.course_name = $event" type="search" placeholder="course"
@@ -23,7 +21,7 @@
       <input-app :value="query.created_at" @update="query.created_at = $event" @change="search()" type="date" center />
       <button @click="search()" class="hidden" />
     </form>
-    <div v-if="!data.student.isNew && payments.length" class="h-full space-y-4" :class="{ 'hidden sm:block': !compressed }">
+    <div v-if="payments.length" class="h-full space-y-4" :class="{ 'hidden sm:block': !compressed }">
       <div @scroll="loadmore" class="sm:h-full space-y-4 overflow-y-auto" :class="{ 'max-h-[250px]': !data.zoom }">
         <h5 v-for="(payment, index) in payments" :key="index" @click="more == payment.uid ? more = false : more = payment.uid"
           class="grid grid-cols-4 gap-2 bg-v bg-v-hover rounded-v py-2 cursor-pointer smooth">
@@ -84,7 +82,7 @@ const getPayments = async () => {
   if (!data.student.isNew) {
     try {
       getting.value = true;
-      const result = await api.post("/api/payments/search", query.value);
+      const result = await api.post("/v1/payments/search", query.value);
       payments.value = result.data;
       store.commit("set", {key: "payments", value: result.data});
       loadingMore.value = result.data.length < 20 && result.data.length;
@@ -106,7 +104,7 @@ const search = async () => {
   try {
     loading.value = true;
     loadingMore.value = false;
-    const result = await api.post("/api/payments/search", query.value);
+    const result = await api.post("/v1/payments/search", query.value);
     payments.value = result.data;
     loadingMore.value = result.data.length < 20 && result.data.length;
     loading.value = false;
@@ -121,7 +119,7 @@ const loadmore = async (event) => {
     try {
       console.log("loadmore : payments");
       loadingMore.value = true;
-      const result = await api.post(`/api/payments/search?offset=${payments.value.length}`, query.value);
+      const result = await api.post(`/v1/payments/search?offset=${payments.value.length}`, query.value);
       payments.value = [ ...payments.value, ...result.data ];
       store.commit("set", {key: "payments", value: payments.value});
       loadingMore.value = result.data.length < 20 && payments.value.length;

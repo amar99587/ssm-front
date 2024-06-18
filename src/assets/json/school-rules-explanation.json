@@ -79,6 +79,10 @@
     "title": "Access to finance",
     "description": ""
   },
+  "statistics:access": {
+    "title": "Access to statistics",
+    "description": ""
+  },
   "settings:access": {
     "title": "Access to settings",
     "description": ""

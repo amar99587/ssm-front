@@ -1,6 +1,12 @@
 <template>
     <div v-bind="$attrs" class="space-y-4">
-        <div class="text-pro">dashboard</div>
+        <div class="sm:flex-between grid gap-4">
+            <div class="text-pro">dashboard</div>
+            <router-link :to="`/school/${school.code}/settings/information?subscription=true`" v-if="license_end < (date_now + 1000 * 60 * 60 * 24 * 10)" class="w-fit flex-between gap-4 hover:underline cursor-pointer smooth mx-auto sm:m-0">
+                <h6>{{ license_end_left }} days until subscription ends</h6>
+                <icon-app v-if="3 >= license_end_left" icon="ep:warning-filled" class="w-3 text-red-500" size="16" />
+            </router-link>
+        </div>
         <div class="grid gap-4 text-center mx-auto">
             <h2 class="tracking-[.0125rem] ml-[.0125rem]">{{school.name}}</h2>
             <h5 @click="copy(school.code.toUpperCase())">
@@ -29,16 +35,21 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { toDate } from '@/utilities/date';
 
 const { school } = defineProps([ "school" ]);
 
 const query = ref("");
 
+const license_end = computed(() => toDate(school.license_end, 'milliseconds'));
+const date_now = computed(() => toDate('now', 'milliseconds'));
+const license_end_left = computed(() => ((license_end.value - date_now.value) / (1000 * 60 * 60 * 24)).toFixed());
+
 const Routes = ref([
     {
         name: 'New Student',
         icon: 'fluent:person-32-filled',
-        path: `/school/${school.code}/students/new`,
+        path: `/school/${school.code}/students?new=true`,
         rule: 'students:create',
         description: 'add a new student to the school'
     },
@@ -52,7 +63,7 @@ const Routes = ref([
     {
         name: 'New Course',
         icon: 'solar:document-bold',
-        path: `/school/${school.code}/courses/new`,
+        path: `/school/${school.code}/courses?new=true`,
         rule: 'courses:create',
         description: 'add a new course to the school'
     },
@@ -107,7 +118,7 @@ const Routes = ref([
     }
 ]);
 
-const search = computed(() =>  Routes.value.filter( item => 
+const search = computed(() => Routes.value.filter( item => 
     item.name.toLowerCase().includes(query.value.toLowerCase()) ||
     item.description.toLowerCase().includes(query.value.toLowerCase())
 ));

@@ -90,6 +90,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { validated } from '@/utilities/validator';
+import { removeDuplicatesUID } from "@/utilities/functions";
 import api from '@/plugins/axios.js';
 import { useRoute } from 'vue-router';
 import router from '@/router';
@@ -136,8 +137,6 @@ const loadingMore = ref({
     students: false,
 });
 
-const lessons = ref(store.state.lessons);
-
 const students = ref([]);
 
 const lesson = ref();
@@ -149,31 +148,27 @@ const query = ref({
     student: "",
 });
 
+const lessons = ref(store.state.lessons.filter(lesson => lesson.course == query.value.course));
+
 onMounted(async () => {
-    if (route.name == "course") {
-        try {
-            course.value = store.state.courses.flat().find((e) => e.uid == route.params.course);
-            getting.value.course = true;
-            getting.value.lessons = true;
-            const { data } = await api.get("/api/courses/get/" + route.params.course);
-            const result = await api.post("/api/lessons/search", { course: query.value.course });
-            course.value = data;
-            lessons.value = result.data;
-            store.commit("add", {key: "courses", value: data});
-            store.commit("set", {key: "lessons", value: result.data});
-            loadingMore.value.lessons = data.length < 20 && result.data.length;
-            if (route.query.lesson) {
-                await getStudents(result.data.filter(lesson => lesson.uid == route.query.lesson)[0]);
-            }
-            getting.value.course = false;
-            getting.value.lessons = false;
-        } catch (error) {
-            console.log(error);
+    try {
+        course.value = store.state.courses.flat().find((e) => e.uid == route.params.course);
+        getting.value.course = true;
+        getting.value.lessons = true;
+        const { data } = await api.get("/v1/courses/get/" + route.params.course);
+        const result = await api.post("/v1/lessons/search", { course: query.value.course });
+        course.value = data;
+        lessons.value = result.data;
+        store.commit("add", {key: "courses", value: data});
+        store.commit("set", {key: "lessons", value: removeDuplicatesUID([ ...result.data, ... store.state.lessons ])});
+        loadingMore.value.lessons = data.length < 20 && result.data.length;
+        if (route.query.lesson) {
+            await getStudents(result.data.filter(lesson => lesson.uid == route.query.lesson)[0]);
         }
-    } else {
-        course.value.name = route.query.name;
-        course.value.teacher = route.query.teacher;
-        course.value.price = route.query.price;
+        getting.value.course = false;
+        getting.value.lessons = false;
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -183,7 +178,7 @@ const getStudents = async (e) => {
         getting.value.students = true;
         query.value.date = null;
         router.push({ query: { lesson: e.uid } });
-        const result = await api.post("/api/lessons/get/students", { 
+        const result = await api.post("/v1/lessons/get/students", { 
             lesson: e.uid, 
             course: e.course, 
             students: [ ...e.presents, ...e.absents ], 
@@ -212,7 +207,7 @@ const create = {
         if (validated({arr: Object.values(e)}) && window.confirm("Do you want to create a new course")) {
             try {
                 loading.value.course = true;
-                const result = await api.post("/api/courses/create", e);
+                const result = await api.post("/v1/courses/create", e);
                 console.log(result.data);
                 course.value = result.data;
                 router.push(`/school/${school.code}/courses/${result.data.uid}`);
@@ -227,9 +222,8 @@ const create = {
         if (e.school && e.uid && window.confirm("Do you want to create new lesson")) {
             try {
                 loading.value.lesson = true;
-                const { data } = await api.post("/api/lessons/create", {school: e.school, course: e.uid});
+                const { data } = await api.post("/v1/lessons/create", {school: e.school, course: e.uid});
                 lesson.value = data;
-                console.log(data);
                 students.value = data.students || [];
                 lessons.value.unshift(data);
                 store.commit("add", {key: "lessons", value: data});
@@ -246,7 +240,7 @@ const update = {
         if (!Object.values(e).includes(null) && window.confirm("Do you want to update current course")) {
             try {
                 loading.value.course = true;
-                const result = await api.post("/api/courses/update", e);
+                const result = await api.post("/v1/courses/update", e);
                 course.value = result.data;
                 store.commit("add", {key: "courses", value: result.data});
                 loading.value.course = false;
@@ -261,7 +255,7 @@ const update = {
         if (window.confirm(`Do you really want to Change "${student.name}" present status from ${present ? "present" : "absent"} to ${present ? "absent" : "present"} ?`)) {
             try {
                 loading.value.student = student.uid;
-                const { data } = await api.post("/api/lessons/student/change/status", { lesson: uid, student: student.uid, present});
+                const { data } = await api.post("/v1/lessons/student/change/status", { lesson: uid, student: student.uid, present});
                 lesson.value = data;
                 
                 const index = lessons.value.findIndex(i => i.uid == uid);
@@ -299,7 +293,7 @@ const search = {
             try {
                 loading.value.lessons = true;
                 loadingMore.value.lessons = false;
-                const { data } = await api.post("/api/lessons/search", { course: query.value.course, created_at: query.value.date });
+                const { data } = await api.post("/v1/lessons/search", { course: query.value.course, created_at: query.value.date });
                 lessons.value = data;
                 loadingMore.value.lessons = data.length < 20 && data.length;
                 loading.value.lessons = false;
@@ -317,7 +311,7 @@ const loadmore = {
             try {
                 console.log("loadmore : lessons");
                 loadingMore.value.lessons = true;
-                const { data } = await api.post(`/api/lessons/search?offset=${lessons.value.length}`, { course: query.value.course, created_at: query.value.date });
+                const { data } = await api.post(`/v1/lessons/search?offset=${lessons.value.length}`, { course: query.value.course, created_at: query.value.date });
                 lessons.value = [ ...lessons.value, ...data ];
                 store.commit("set", {key: "lessons", value: lessons.value});
                 loadingMore.value.lessons = data.length < 20 && lessons.value.length;
