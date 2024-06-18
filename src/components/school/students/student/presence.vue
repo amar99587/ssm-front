@@ -9,6 +9,8 @@
         :icon="!data.zoom ? 'ic:round-zoom-out-map' : 'ic:round-zoom-in-map'" class="hidden sm:block cursor-pointer" />
     </div>
     <h6 v-if="getting && !lessons.length" class="h-full flex-center pb-2">LOADING...</h6>
+    <h6 v-else-if="!getting && !lessons.length"
+      class="h-full flex-center pb-2">no lessons to display</h6>
     <div v-if="lessons.length" class="min-h-[36px] gap-2"
       :class="{ 'hidden sm:flex-between': !comp, 'flex-between': comp }">
       <div class="w-full grid grid-cols-6 gap-2">
