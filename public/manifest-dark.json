@@ -4,8 +4,8 @@
     "description": "small school management software as a service as a web application",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#212937",
-    "theme_color": "#212937",
+    "background_color": "#394151",
+    "theme_color": "#394151",
     "icons": [
       {
         "src": "./img/icons/android-chrome-maskable-512x512.png",

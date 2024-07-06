@@ -218,21 +218,21 @@ const app = document.querySelector("html");
 const dark = ref(localStorage.dark == "true");
 const language = ref(localStorage.language);
 
-const mode = i => {
-    function setManifest(darkMode) {
+const mode = darkMode => {
+    function changeApp() {
         const manifestLink = document.querySelector('link[rel="manifest"]');
         const themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
         if (manifestLink) {
             manifestLink.setAttribute('href', darkMode ? '/manifest-dark.json' : '/manifest-light.json');
         }
         if (themeColorMetaTag) {
-            themeColorMetaTag.setAttribute('content', darkMode  ? "#212937"  :  "#e5e7eb");
+            themeColorMetaTag.setAttribute('content', darkMode  ? "#394151"  :  "#e5e7eb");
         }
     }
-    dark.value = i;
-    localStorage.dark = i;
-    i ? app.classList.add("dark") : app.classList.remove("dark");
-    setManifest(i);
+    dark.value = darkMode;
+    localStorage.dark = darkMode;
+    darkMode ? app.classList.add("dark") : app.classList.remove("dark");
+    changeApp(darkMode);
 };
 
 const changeLanguage = i => {
