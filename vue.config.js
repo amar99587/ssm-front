@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
   pwa: {
-    name: "ProEcole",
+    name: "Proecole",
     themeColor: "#e5e7eb",
     msTileColor: "#e5e7eb",
     appleMobileWebAppCapable: "yes",

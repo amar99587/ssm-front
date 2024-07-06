@@ -226,7 +226,7 @@ const mode = i => {
             manifestLink.setAttribute('href', darkMode ? '/manifest-dark.json' : '/manifest-light.json');
         }
         if (themeColorMetaTag) {
-            themeColorMetaTag.setAttribute('content', darkMode  ? "#e5e7eb"  :  "#212937");
+            themeColorMetaTag.setAttribute('content', darkMode  ? "#212937"  :  "#e5e7eb");
         }
     }
     dark.value = i;

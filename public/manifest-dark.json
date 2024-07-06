@@ -1,6 +1,6 @@
 {
-    "name": "ProEcole",
-    "short_name": "ProEcole",
+    "name": "Proecole",
+    "short_name": "Proecole",
     "description": "small school management software as a service as a web application",
     "start_url": "/",
     "display": "standalone",
