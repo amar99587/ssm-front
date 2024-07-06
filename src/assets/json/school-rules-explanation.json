@@ -1,114 +1,130 @@
 {
   "students:access": {
-    "title": "Access to students list",
+    "title": "Accès à la liste des élèves",
     "description": ""
   },
   "students:create": {
-    "title": "Add new student",
+    "title": "Ajouter un nouvel élève",
     "description": ""
   },
   "students:information:access": {
-    "title": "Access to student information",
+    "title": "Accès aux informations des élèves",
     "description": ""
   },
   "students:information:edit": {
-    "title": "Edit student information",
+    "title": "Modifier les informations des élèves",
     "description": ""
   },
   "students:courses:access": {
-    "title": "Access to students courses",
+    "title": "Accès aux cours des élèves",
     "description": ""
   },
   "students:payments:access": {
-    "title": "Access to student payment",
+    "title": "Accès aux paiements des élèves",
     "description": ""
   },
   "students:payments:add": {
-    "title": "Add new payment",
+    "title": "Ajouter un nouveau paiement",
     "description": ""
   },
   "students:presence:access": {
-    "title": "Access to student presence",
+    "title": "Accès à la présence des élèves",
     "description": ""
   },
   "courses:access": {
-    "title": "Access to courses list",
+    "title": "Accès à la liste des cours",
     "description": ""
   },
   "courses:create": {
-    "title": "Add new course",
+    "title": "Ajouter un nouveau cours",
     "description": ""
   },
   "courses:information:access": {
-    "title": "Access to course information",
+    "title": "Accès aux informations des cours",
     "description": ""
   },
   "courses:information:edit": {
-    "title": "Edit course information",
+    "title": "Modifier les informations des cours",
     "description": ""
   },
   "courses:lessons:access": {
-    "title": "Access to lessons list",
+    "title": "Accès à la liste des leçons",
     "description": ""
   },
   "courses:lessons:create": {
-    "title": "Create new lesson",
+    "title": "Créer une nouvelle leçon",
     "description": ""
   },
   "courses:presence:access": {
-    "title": "Access to students presence",
+    "title": "Accès à la présence des élèves",
     "description": ""
   },
   "courses:presence:edit": {
-    "title": "Edit students presence",
+    "title": "Modifier la présence des élèves",
+    "description": ""
+  },
+  "teachers:access": {
+    "title": "Accès à la liste des enseignants",
+    "description": ""
+  },
+  "teachers:create": {
+    "title": "Ajouter de nouveaux enseignants",
+    "description": ""
+  },
+  "teachers:information:access": {
+    "title": "Accès aux informations des enseignants",
+    "description": ""
+  },
+  "teachers:information:edit": {
+    "title": "Modifier les informations des enseignants",
     "description": ""
   },
   "timetable:access": {
-    "title": "Access to timetables list",
+    "title": "Accès à la liste des emplois du temps",
     "description": ""
   },
   "timetable:create": {
-    "title": "Add new timetable",
+    "title": "Ajouter un nouvel emploi du temps",
     "description": ""
   },
   "timetable:delete": {
-    "title": "Delete timetable",
+    "title": "Supprimer l'emploi du temps",
     "description": ""
   },
   "finance:access": {
-    "title": "Access to finance",
+    "title": "Accès aux finances",
     "description": ""
   },
   "statistics:access": {
-    "title": "Access to statistics",
+    "title": "Accès aux statistiques",
     "description": ""
   },
   "settings:access": {
-    "title": "Access to settings",
+    "title": "Accès aux paramètres",
     "description": ""
   },
   "settings:information:edit": {
-    "title": "Edit school information",
+    "title": "Modifier les informations de l'école",
     "description": ""
   },
   "settings:users:access": {
-    "title": "Access to users",
+    "title": "Accès aux utilisateurs",
     "description": ""
   },
   "settings:users:link": {
-    "title": "Link new user",
+    "title": "Lier un nouvel utilisateur",
     "description": ""
   },
   "settings:users:unlink": {
-    "title": "Unlink user",
+    "title": "Dissocier un utilisateur",
     "description": ""
   },
   "settings:users:rules:access": {
-    "title": "Access users rules",
+    "title": "Accès aux règles des utilisateurs",
     "description": ""
   },
   "settings:users:rules:edit": {
-    "title": "Edit users rules",
+    "title": "Modifier les règles des utilisateurs",
     "description": ""
   }
 }

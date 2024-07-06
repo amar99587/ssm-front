@@ -1,9 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Krona+One&display=swap');
 
 @tailwind base;
-@tailwind components;
 @tailwind utilities;
+@tailwind components;
 
 * {
   outline:0;
@@ -55,14 +54,7 @@ body {
     -webkit-appearance: none;
     margin: 0;
   }
-
-  .font-logo {
-    font-family: "Krona One", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
   
-
   input,
   textarea {
     @apply bg-transparent;

@@ -1,18 +1,20 @@
 <template>
   <div dir="auto" class="bg-White rounded-v flex-1 flex flex-col gap-4 p-4">
     <div class="min-h-[24px] flex-between">
-      <h4 class="font-bold">presence <a v-if="getting && lessons.length" class="animate-pulse">...</a></h4>
+      <h4 class="font-bold">présence<a v-if="getting && lessons.length" class="animate-pulse">...</a></h4>
       <icon-app v-if="loading" icon="svg-spinners:ring-resize" />
       <icon-app v-else @click="comp = !comp" :icon="comp ? 'fluent:caret-up-16-filled' : 'fluent:caret-down-16-filled'"
         class="block sm:hidden cursor-pointer" />
       <icon-app v-if="!loading" @click="emits('zoom')"
         :icon="!data.zoom ? 'ic:round-zoom-out-map' : 'ic:round-zoom-in-map'" class="hidden sm:block cursor-pointer" />
     </div>
-    <h6 v-if="getting && !lessons.length" class="h-full flex-center pb-2">LOADING...</h6>
+    <h6 v-if="getting && !lessons.length" class="h-full flex-center pb-2">{{ $t('loading...') }}</h6>
+    <h6 v-else-if="!getting && !lessons.length"
+      class="h-full flex-center pb-2">aucune séance à afficher</h6>
     <div v-if="lessons.length" class="min-h-[36px] gap-2"
       :class="{ 'hidden sm:flex-between': !comp, 'flex-between': comp }">
       <div class="w-full grid grid-cols-6 gap-2">
-        <input-app :value="query.course" @update="query.course = $event" type="search" placeholder="courses"
+        <input-app :value="query.course" @update="query.course = $event" type="search" placeholder="cours"
           class="col-span-4" />
         <input-app :value="query.created_at" @update="query.created_at = $event" type="date" class="col-span-2"
           center />
@@ -22,7 +24,7 @@
         <div class="min-w-[1rem] h-4 rounded-full smooth" :style="`background: ${query.color};`"></div>
       </div>
     </div>
-    <div v-if="lessons.length" class="h-full space-y-4" :class="{ 'hidden sm:block': !comp }">
+    <div v-if="lessons.length" class="h-full space-y-4 smooth" :class="{ 'opacity-60': getting && lessons?.length, 'hidden sm:block': !comp }">
       <div class="sm:h-full space-y-4 overflow-y-auto" :class="{ 'max-h-[250px]': !data.zoom }">
         <h5 v-if="search.length" v-for="(lesson, index) in search" :key="index"
           class="flex-between gap-2 sm:gap-4 bg-v bg-v-hover rounded-v p-2 smooth">
@@ -33,7 +35,7 @@
           <div class="min-w-[1rem] h-4 rounded-full smooth"
             :style="`background: ${lesson?.presents?.includes(data.student.uid) ? '#0B6E4F' : '#FA9F42'};`"></div>
         </h5>
-        <h6 v-else class="h-full flex-center">no data to display</h6>
+        <h6 v-else class="h-full flex-center">{{ $t("no data to display") }}</h6>
       </div>
     </div>
   </div>

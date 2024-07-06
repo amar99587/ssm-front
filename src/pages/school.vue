@@ -61,6 +61,11 @@ const nav = ref([
     path: "courses"
   },
   {
+    icon: "fluent:person-accounts-20-filled",
+    name: "Teachers",
+    path: "teachers"
+  },
+  {
     icon: "fluent:calendar-ltr-24-filled",
     name: "Timetable",
     path: "timetable"

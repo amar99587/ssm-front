@@ -12,6 +12,10 @@
   "create school": "créer une école",
   "enter here your school name": "entrez ici le nom de votre école",
   "create": "créer",
+  "save": "enregistrer",
+  "cancel": "annuler",
+  "edit": "modifier",
+  "created at": "créé à",
   "or": "ou",
   "link to school": "lien avec l'école",
   "enter here the school code": "entrez ici le code de l'école",
@@ -20,5 +24,6 @@
   "reach out to us": "contactez-nous",
   "your satisfaction is our priority!": "votre satisfaction est notre priorité!",
   "by clicking 'OK' you will be logged out from your account": "En cliquant sur 'OK' vous serez déconnecté de votre compte",
-  "Are you sure you want to unlink schoolname school?": "Êtes-vous sûr de vouloir dissocier l'école {schoolname} ?"
+  "Are you sure you want to unlink schoolname school?": "Êtes-vous sûr de vouloir dissocier l'école {schoolname} ?",
+  "no data to display": "aucune donnée à afficher"
 }

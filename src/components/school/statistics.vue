@@ -1,19 +1,22 @@
 <template>
-    <div class="md:flex md:flex-col space-y-4 bg-cover bg-[url(https://cdn.dribbble.com/userupload/11942631/file/original-aedf154e37b85a763d981b7e19a8e6a8.jpg)]">
-        <!-- <div class="flex flex-col space-y-6 min-h-[96px]">
-            <div class="flex-between">
-                <div class="text-pro">statistics</div>
-                <icon-app v-if="loading" icon="svg-spinners:ring-resize" />
+    <div class="md:flex-center">
+        <div class="md:w-6/12 space-y-4">
+            <div class="text-pro">Statistiques 📈</div>
+            <div class="space-y-2">
+            <h4 class="font-bold">Découvrez avec ces statistiques :</h4>
+            <h5>- Le cours le plus vendu 💵</h5>
+            <h5>- Le professeur qui rapporte le plus d'argent 💵</h5>
+            <h5>- Nombre de nouveaux étudiants le mois dernier 🙋🏻</h5>
+            <h5>- Le cours avec le plus d'absences 👀 (Cela peut indiquer que les étudiants n'ont pas trouvé ce à quoi ils s'attendaient)</h5>
+            <h5>- Et plus encore...</h5>
             </div>
-        </div> -->
-        <!-- <h5 class="md:h-full flex-center">
-            no data to display
-        </h5> -->
-        <!-- <img src="https://cdn.dribbble.com/userupload/11942631/file/original-aedf154e37b85a763d981b7e19a8e6a8.jpg" class="h-full w-full" alt="" srcset=""> -->
+            <h4 class="font-medium">Pour vous aider à prendre les meilleures décisions ✨</h4>
+            <div class="space-y-2">
+                <h4 class="font-medium">Les statistiques ne sont pas encore disponibles, mais nous y travaillons.</h4>
+                <h5>Pour toute suggestion ou question, veuillez remplir ce formulaire : <a class="link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSciLo5Wfq1ihWGKuYMO8S8n50WjeWshLYqHGTQFi4x-9-Tajg/viewform">Cliquez ici 🔗</a></h5>
+            </div>
+        </div>
     </div>
-</template>
+</template>  
 
-<script setup>
-import { ref, onMounted } from 'vue'
-const loading = ref(false);
-</script>
+<script></script>

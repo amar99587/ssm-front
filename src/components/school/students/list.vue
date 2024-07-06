@@ -2,30 +2,32 @@
   <div class="flex flex-col">
     <div class="min-h-[96px]">
       <div class="flex-between">
-        <div class="text-pro">students <a v-if="getting && students.length" class="animate-pulse">...</a></div>
+        <div class="text-pro">les élèves<a v-if="getting && students.length" class="animate-pulse">...</a></div>
         <icon-app v-if="loading" icon="svg-spinners:ring-resize" />
       </div>
-      <dialog-app :ref="dialog.item" title="add student" @close="dialog.close()" :canClose="!creating">
+
+      <dialog-app :ref="dialog.item" title="ajouter un nouvel étudiant" @close="dialog.close()" :canClose="!creating">
         <div class="space-y-2">
-          <label for="student fullname">fullname <a class="text-red-500">*</a></label>
-          <input-app :value="student.name" @update="student.name = $event" placeholder="enter student full name here" icon="fluent:person-24-filled" />
+          <label for="student fullname">nom et prénom <a class="text-red-500">*</a></label>
+          <input-app :value="student.name" @update="student.name = $event" placeholder="entrez le nom complet de l'étudiant ici" icon="fluent:person-24-filled" />
         </div>
         <div class="space-y-2">
-          <label for="birthday">birthday <a class="text-red-500">*</a></label>
+          <label for="birthday">date de naissance <a class="text-red-500">*</a></label>
           <input-app :value="student.birthday" @update="student.birthday = $event" type="date" icon="fluent:calendar-24-filled" center />
         </div>
         <div class="space-y-2">
-          <label for="phone number">phone number</label>
-          <input-app :value="student.phone" @update="student.phone = $event" type="number" placeholder="enter student phone number here" icon="fluent:call-24-filled" />
+          <label for="phone number">téléphone</label>
+          <input-app :value="student.phone" @update="student.phone = $event" type="number" placeholder="entrez le numéro de téléphone de l'étudiant ici" icon="fluent:call-24-filled" />
         </div>
         <div class="space-y-2">
           <label for="email">email</label>
-          <input-app :value="student.email" @update="student.email = $event" type="email" placeholder="enter student email here" icon="fluent:mail-24-filled" />
+          <input-app :value="student.email" @update="student.email = $event" type="email" placeholder="entrez l'e-mail de l'étudiant ici" icon="fluent:mail-24-filled" />
         </div>
         <div class="flex-center pt-4">
-          <btn-app text="create" @click="create(student)" :loading="creating" icon="fluent:add-12-filled" dark />
+          <btn-app text="créer" @click="create(student)" :loading="creating" icon="fluent:add-12-filled" dark />
         </div>
       </dialog-app>
+
       <div class="flex-between gap-4 my-4">
         <div v-if="$store.getters.permission('students:create')" @click="dialog.open" class="btn-mini">
           <icon-app icon="fluent:add-12-filled" class="w-3" />
@@ -33,17 +35,17 @@
         <form @submit.prevent="submitForm" class="w-full flex-between gap-4">
           <button @click="search()" class="hidden" />
           <input-app :value="query.name" @update="query.name = $event" icon="fluent:person-24-filled" accessKey="c"
-            type="search" center placeholder="student name" />
+            type="search" center placeholder="nom d'étudiant" />
           <input-app :value="query.birthday" @update="query.birthday = $event" class="hidden lg:flex" @change="search()" type="date"
             icon="fluent:calendar-24-filled" center />
           <input-app :value="query.email" @update="query.email = $event" class="hidden lg:flex" type="search"
-            icon="fluent:mail-24-filled" center placeholder="student email" />
+            icon="fluent:mail-24-filled" center placeholder="e-mail de l'étudiant" />
           <input-app :value="query.phone" @update="query.phone = $event" class="hidden md:flex" type="number"
-            icon="fluent:call-24-filled" center placeholder="student phone" />
+            icon="fluent:call-24-filled" center placeholder="téléphone de l'étudiant" />
         </form>
       </div>
     </div>
-    <h6 v-if="!students.length" class="h-full flex-center">{{ getting ? "LOADING..." : "no data to display" }}</h6>
+    <h6 v-if="!students.length" class="h-full flex-center">{{ $t(getting ? "loading..." : "no data to display") }}</h6>
     <h5 v-else @scroll="loadmore" :class="{ 'opacity-60': getting && students.length }"
       class="h-full space-y-4 overflow-y-auto smooth">
       <router-link v-for="(student, index) in students" :key="index"
@@ -62,7 +64,7 @@
             :class="{ 'hover:link': student.phone }">{{ student.phone || "-" }}</a>
         </div>
       </router-link>
-      <h6 v-if="loadingMore && loadingMore != students.length" class="text-center py-3">loading...</h6>
+      <h6 v-if="loadingMore && loadingMore != students.length" class="text-center py-3">{{ $t('loading...') }}</h6>
     </h5>
   </div>
 </template>
@@ -141,7 +143,7 @@ onMounted(async () => {
 });
 
 const create = async e => {
-  if (store.getters.permission('students:create') && validated({ arr: [e.school, e.name, e.birthday] }) && window.confirm("Do you want to create a new student")) {
+  if (store.getters.permission('students:create') && validated({ arr: [e.school, e.name, e.birthday] }) && window.confirm("Voulez-vous créer un nouvel étudiant")) {
     try {
       creating.value = true;
       const result = await api.post("/v1/students/create", e);

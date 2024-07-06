@@ -1,27 +1,32 @@
 <template>
     <div v-bind="$attrs" class="hidden" />
     <div class="w-full min-h-fit flex flex-col gap-4">
-        <div class="min-h-[212px] sm:min-h-[108px] bg-White grid gap-4 rounded-v p-4 w-full">
-            <h4 class="font-bold">informations <a v-if="getting.course && course?.uid" class="animate-pulse">...</a></h4>
-            <h6 v-if="getting.course && !course?.uid" class="text-center">LOADING...</h6>
-            <form v-else @submit.prevent="submitForm" class="w-full grid sm:flex-between gap-4">
-                <div class="w-full grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <input-app :value="course.name" @update="course.name = $event" :readonly="!can.edit.course" icon="solar:document-bold" placeholder="course full name" class="col-span-2" />
-                    <input-app :value="course.teacher" @update="course.teacher = $event" :readonly="!can.edit.course" icon="fluent:person-24-filled" placeholder="teacher name" />
-                    <input-app :value="course.price" @update="course.price = $event" :readonly="!can.edit.course" icon="solar:tag-price-bold" type="number" center placeholder="price of one lesson" />
+        <div class="min-h-[212px] bg-White grid gap-4 rounded-v p-4 w-full">
+            <h4 class="font-bold">informations<a v-if="getting.course && course?.uid" class="animate-pulse">...</a></h4>
+            <h6 v-if="getting.course && !course?.uid" class="text-center">{{ $t('loading...') }}</h6>
+            <form v-else @submit.prevent="submitForm" class="w-full grid gap-4 smooth" :class="{ 'opacity-60': getting.course && course?.uid }">
+                <div class="w-full grid grid-cols-2 gap-4">
+                    <input-app :value="course.name" @update="course.name = $event" :readonly="!course.edit" icon="solar:document-bold" placeholder="nom complet du cours" class="col-span-2" />
+                    <input-app :value="course.teacher" @update="course.teacher = $event" :readonly="!course.edit" :datalist="store.state.courses.map(({ teacher }) => teacher)" icon="fluent:person-24-filled" placeholder="nom du prof" />
+                    <input-app :value="course.price" @update="course.price = $event" :readonly="!course.edit" icon="solar:tag-price-bold" type="number" center placeholder="prix de séance" />
                 </div>
-                <div v-if="can.edit.course" class="min-w-fit flex justify-end">
-                    <btn-app @click="course?.uid ? update.course(course) : create.course(course)" :text="course?.uid ? 'save' : 'create'" dark :loading="loading.course" icon="fluent:add-12-filled" class="min-w-fit" />
+                <div class="flex-between min-h-[36px]">
+                    <h6 class="first-letter:lowercase">{{ $t('created at') +' '+ $toDate(course?.created_at, 'timestamp') }}</h6>
+                    <btn-app v-if="can.edit.course && !course.edit" @click="course.edit = true" :text="$t('edit')" icon="fluent:edit-12-filled" class="min-w-fit" />
+                    <div v-else-if="can.edit.course && course.edit" class="w-fit flex-between gap-4">
+                        <btn-app @click="course.edit = false" :text="$t('cancel')" icon="fa6-solid:xmark" class="min-w-fit" />
+                        <btn-app @click="update.course(course)" :text="$t(course?.uid ? 'save' : 'create')" dark :loading="loading.course" icon="fluent:add-12-filled" class="min-w-fit" />
+                    </div>
                 </div>
             </form>
         </div>
         <div v-if="can.access.lessons" class="h-full flex flex-col gap-4 bg-White rounded-v p-4 w-full">
-            <div class="grid gap-4" :class="{ 'min-h-[112px]': !lesson && lessons.length, 'min-h-[164px]': lesson, 'min-h-[24px]': route.name == 'new course', 'min-h-[76px]': !lessons.length  && route.name != 'new course'}">
+            <div class="grid gap-4" :class="{ 'min-h-[112px]': !lesson && lessons.length, 'min-h-[164px]': lesson, 'min-h-[76px]': !lessons.length}">
                 <div class="flex-between">
-                    <h4 class="font-bold">Lessons <a v-if="getting.lessons && lessons.length" class="animate-pulse">...</a></h4>
-                    <icon-app v-if="lesson || loading.lessons" @click="lesson ? (() => { lesson = null; query.student = ''; query.color = '#212937'; students = []; lessons = store.state.lessons })() : false" :icon="loading.lessons ? 'svg-spinners:ring-resize' : 'ion:chevron-back-outline'" class="cursor-pointer" />
+                    <h4 class="font-bold">séances<a v-if="getting.lessons && lessons.length" class="animate-pulse">...</a></h4>
+                    <icon-app v-if="lesson || loading.lessons" @click="lesson ? (() => { lesson = null; query.student = ''; query.color = '#212937'; students = []; })() : false" :icon="loading.lessons ? 'svg-spinners:ring-resize' : 'ion:chevron-back-outline'" class="cursor-pointer" />
                 </div>
-                <div v-if="route.name != 'new course' && !lesson" class="flex-between gap-4">
+                <div v-if="!lesson" class="flex-between gap-4">
                     <div v-if="store.getters.permission('courses:lessons:create')" @click="create.lesson(course)" class="btn-mini">
                         <icon-app :icon="loading.lesson ? 'svg-spinners:ring-resize' : 'fluent:add-12-filled'" class="w-3" />
                     </div>
@@ -30,10 +35,10 @@
                         <button class="hidden"/>
                     </form>
                 </div>
-                <h5 v-if="route.name == 'course' && lessons.length && (lesson ? can.access.presence : true)" class="flex-between text-center px-2">
-                    <div class="w-full truncate">created at</div>
-                    <div class="w-full">presents</div>
-                    <div class="w-full">absents</div>
+                <h5 v-if="lessons.length && (lesson ? can.access.presence : true)" class="flex-between text-center px-2">
+                    <div class="w-full truncate">{{ $t('created at') }}</div>
+                    <div class="w-full">présences</div>
+                    <div class="w-full">absences</div>
                     <div class="w-full hidden sm:block">total</div>
                 </h5>
                 <h5 v-if="can.access.presence && lesson" class="bg-v rounded-v p-2 flex-between text-center">
@@ -44,17 +49,16 @@
                     <div class="w-full" :class="{ 'hidden sm:block': lesson }">{{ lesson?.presents.length + lesson?.absents.length }}</div>
                 </h5>
                 <form @submit.prevent="submitForm" v-if="can.access.presence && lesson" class="flex-between gap-2">
-                    <input-app :value="query.student" @update="query.student = $event" icon="fluent:person-24-filled" type="search" placeholder="student name" accessKey="c" />
+                    <input-app :value="query.student" @update="query.student = $event" icon="fluent:person-24-filled" type="search" placeholder="nom d'étudiant" accessKey="c" />
                     <div class="flex-center min-w-fit h-[36px] bg-v rounded-v p-2 cursor-pointer border-pro">
                         <div @click="query.color = changeColor(query.color)" class="min-w-[1rem] h-4 rounded-full smooth" :style="`background: ${query.color};`"></div>
                     </div>
                     <button class="hidden"/>
                 </form>
             </div>
-            <div v-if="can.access.lessons " @scroll="loadmore.lessons" class="h-full space-y-4 overflow-y-auto">
-                <h6 v-if="route.name == 'new course'" class="h-full flex-center pb-2">you have to create course first</h6>
-                <h6 v-else-if="(!lessons.length || (can.access.presence && lesson && !students.length)) && (getting.lessons || getting.students)" class="h-full flex-center pb-2">LOADING...</h6>
-                <h6 v-else-if="(!lessons.length || (can.access.presence && lesson && !searchStudent.length)) && !getting.lessons && !getting.students" class="h-full flex-center pb-2">no data to display</h6>
+            <div v-if="can.access.lessons" @scroll="loadmore.lessons" class="h-full space-y-4 overflow-y-auto">
+                <h6 v-if="(!lessons.length || (can.access.presence && lesson && !students.length)) && (getting.lessons || getting.students)" class="h-full flex-center pb-2">{{ $t('loading...') }}</h6>
+                <h6 v-else-if="(!lessons.length || (can.access.presence && lesson && !searchStudent.length)) && !getting.lessons && !getting.students" class="h-full flex-center pb-2">{{ $t("no data to display") }}</h6>
                 <h5 v-else-if="can.access.presence && lesson" v-for="(student, index) in searchStudent" :key="index" class="bg-v bg-v-hover rounded-v p-2 flex-between smooth">
                     <router-link :to="`/school/${school.code}/students/${student.uid}`" class="w-full text-center truncate hover:link">{{ student.name }}</router-link>
                     <div class="w-full text-center" :class="{ 'hidden sm:block': lesson }">{{ student.birthday }}</div>
@@ -74,14 +78,14 @@
                         </div>
                     </div>
                 </h5>
-                <h5 v-else-if="can.access.lessons && lessons.length" v-for="item in lessons" @click="can.access.presence ? getStudents(item) : ''" class="bg-v bg-v-hover rounded-v p-2 cursor-pointer flex-between text-center smooth">
+                <h5 v-else-if="can.access.lessons && lessons.length" v-for="item in lessons.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))" @click="can.access.presence ? getStudents(item) : ''" class="bg-v bg-v-hover rounded-v p-2 cursor-pointer flex-between text-center smooth" :class="{ 'opacity-60': getting.lessons && lessons.length }">
                     <div class="w-full sm:hidden">{{ $toDate(item.created_at) }}</div>
                     <div class="w-full hidden sm:block">{{ $toDate(item.created_at, "timestamp") }}</div>
                     <div class="w-full">{{ item?.presents.length }}</div>
                     <div class="w-full">{{ item?.absents.length }}</div>
                     <div class="w-full hidden sm:block">{{ item?.presents.length + item?.absents.length }}</div>
                 </h5>
-                <h6 v-if="loadingMore.lessons && (typeof loadingMore.lessons != 'number')" class="text-center py-3">loading...</h6>
+                <h6 v-if="loadingMore.lessons && (typeof loadingMore.lessons != 'number')" class="text-center py-3">{{ $t('loading...') }}</h6>
             </div>
         </div>
     </div>
@@ -119,6 +123,7 @@ const course = ref({
     name: null,
     teacher: null,
     price: null,
+    edit: false,
 });
 
 const getting = ref({
@@ -150,7 +155,7 @@ const query = ref({
 
 const lessons = ref(store.state.lessons.filter(lesson => lesson.course == query.value.course));
 
-onMounted(async () => {
+const getCourseData = async () => {
     try {
         course.value = store.state.courses.flat().find((e) => e.uid == route.params.course);
         getting.value.course = true;
@@ -159,6 +164,7 @@ onMounted(async () => {
         const result = await api.post("/v1/lessons/search", { course: query.value.course });
         course.value = data;
         lessons.value = result.data;
+        // console.log(lessons.value);
         store.commit("add", {key: "courses", value: data});
         store.commit("set", {key: "lessons", value: removeDuplicatesUID([ ...result.data, ... store.state.lessons ])});
         loadingMore.value.lessons = data.length < 20 && result.data.length;
@@ -170,7 +176,9 @@ onMounted(async () => {
     } catch (error) {
         console.log(error);
     }
-});
+};
+
+onMounted(async () => await getCourseData());
 
 const getStudents = async (e) => {
     try {
@@ -203,30 +211,16 @@ const changeColor = (color) => {
 };
 
 const create = {
-    course: async (e) => {
-        if (validated({arr: Object.values(e)}) && window.confirm("Do you want to create a new course")) {
-            try {
-                loading.value.course = true;
-                const result = await api.post("/v1/courses/create", e);
-                console.log(result.data);
-                course.value = result.data;
-                router.push(`/school/${school.code}/courses/${result.data.uid}`);
-                store.commit("add", {key: "courses", value: result.data});
-                loading.value.course = false;
-            } catch (error) {
-                console.log(error);
-            }
-        };
-    },
     lesson: async (e) => {
-        if (e.school && e.uid && window.confirm("Do you want to create new lesson")) {
+        if (e.school && e.uid && window.confirm("Do you want to create a new session ?")) {
             try {
                 loading.value.lesson = true;
                 const { data } = await api.post("/v1/lessons/create", {school: e.school, course: e.uid});
                 lesson.value = data;
                 students.value = data.students || [];
-                lessons.value.unshift(data);
-                store.commit("add", {key: "lessons", value: data});
+                lessons.value = [ ...lessons.value, data ];
+                console.log(lessons.value, data);
+                store.commit("add", { key: "lessons", value: data });
                 loading.value.lesson = false;
             } catch (error) {
                 console.log(error);
@@ -237,7 +231,7 @@ const create = {
 
 const update = {
     course: async (e) => {
-        if (!Object.values(e).includes(null) && window.confirm("Do you want to update current course")) {
+        if (!Object.values(e).includes(null) && window.confirm("Voulez-vous mettre à jour les informations sur le cours ?")) {
             try {
                 loading.value.course = true;
                 const result = await api.post("/v1/courses/update", e);
@@ -252,7 +246,7 @@ const update = {
     studentStatus: async (student) => {
         const { uid, presents } = lesson.value;
         const present = presents.includes(student.uid);
-        if (window.confirm(`Do you really want to Change "${student.name}" present status from ${present ? "present" : "absent"} to ${present ? "absent" : "present"} ?`)) {
+        if (window.confirm(`Voulez-vous vraiment changer le statut de présence de "${student.name}" de ${present ? "présent" : "absent"} à ${present ? "absent" : "présent"} ?`)) {
             try {
                 loading.value.student = student.uid;
                 const { data } = await api.post("/v1/lessons/student/change/status", { lesson: uid, student: student.uid, present});

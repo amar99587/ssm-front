@@ -16,13 +16,13 @@
       <h6 class="mx-auto mini-text">{{ user.email }}</h6>
       <h6 v-if="!schools && getting" class="text-center animate-pulse pt-8">{{ $t('loading...') }}</h6>
 
-      <dialog-app :ref="dialog.item" title="subscription" @close="!creating ? dialog.close() : false" :canClose="!creating">
+      <dialog-app :ref="dialog.item" title="abonnement" @close="!creating ? dialog.close() : false" :canClose="!creating">
         <div class="text-center grid gap-2 pt-4 pb-6">
           <h2 class="font-medium">{{ data.name }}</h2>
           <h4 v-if="data.code" class="uppercase tracking-wider">{{ data.code }}</h4>
         </div>
         <div class="space-y-2">
-          <label for="email">duration in months</label>
+          <label for="email">durée en mois</label>
           <div class="flex-between gap-4">
             <div @click="++subscription.duration" class="btn-mini">
               <icon-app icon="fluent:add-12-filled" class="w-3" />
@@ -34,22 +34,22 @@
             </div>
           </div>
           <h6 class="mini-text pb-2">
-            subscription will expire in
+            l'abonnement expirera le 
             {{ toDate((+data.license?.end_left > 0 ? data.license?.end_at : data.license?.date_now) + (1000 * 60 * 60 * 24 * 30 * subscription.duration)) }}
           </h6>
         </div>
         <div class="w-full border-b-[1px] dark:border-gray-700 pb-1" />
         <div class="flex-between pt-1">
-          <div>unit price</div>
+          <div>prix unitaire</div>
           <div>{{ subscription.price }} DA</div>
         </div>
         <div class="w-full border-b-[1px] dark:border-gray-700 pb-1" />
         <div class="flex-between pt-1">
-          <div>total price</div>
+          <div>prix total</div>
           <div>{{ subscription.price * subscription.duration }} DA</div>
         </div>
         <div class="flex-center pt-4">
-          <btn-app text="pay" @click="createPayment(data.code)" :loading="creating" icon="twemoji:credit-card" dark />
+          <btn-app text="payer" @click="createPayment(data.code)" :loading="creating" icon="twemoji:credit-card" dark />
         </div>
       </dialog-app>
 
@@ -58,6 +58,7 @@
         <h2>{{ $t('schools') }}<a v-if="getting" class="animate-pulse">...</a></h2>
         <div class="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           <div v-for="(school, index) in schools" :key="index" @click="redirect(school)"
+            :class="{ 'opacity-60': getting && schools.length }"
             class="h-240 grid gap-4 border-v rounded-v p-4 hover:bg-v smooth cursor-pointer">
             <div class="flex-between">
               <icon-app v-if="school.type != 'owner'"
@@ -90,7 +91,7 @@
             <h3>{{ $t("create school") }}</h3>
             <form @submit.prevent="submitForm" class="grid gap-4">
               <h6 v-if="!schools.some(item => item.type == 'owner')" class="sm:w-10/12 mx-auto mini-text">
-                Enjoy a 30-day free trial with your first school creation!
+                Profitez d'un mois d'essai gratuit pour votre première école
               </h6>
               <div class="sm:w-10/12 mx-auto">
                 <input-app :value="name" @update="name = $event" center icon="solar:square-academic-cap-bold"
@@ -106,7 +107,7 @@
             <h3>{{ $t("link to school") }}</h3>
             <form @submit.prevent="submitForm" class="grid gap-4">
               <h6 class="sm:w-10/12 mx-auto mini-text">
-                Link to another school, for free!
+                Créez un lien vers une autre école, gratuitement !
               </h6>
               <div class="sm:w-10/12 mx-auto">
                 <input-app :value="code" @update="code = $event.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase()"
@@ -168,7 +169,7 @@ const dialog = {
 
 const subscription = ref({
   price: 2500,
-  duration: 1,
+  duration: 1, // month
 });
 
 onMounted(async () => {
@@ -178,11 +179,11 @@ onMounted(async () => {
     store.commit("set", { key: "schools", value: result.data });
     schools.value = result.data;
     getting.value = false;
-    // const payment = route.query.subscription;
-    // if (payment && schools.value.some(item => item.code == payment)) {
-    //   data.value = schools.value.find(item => item.code == payment);
-    //   dialog.open();
-    // }
+    const payment = route.query.subscription;
+    if (payment && schools.value.some(item => item.code == payment)) {
+      data.value = schools.value.find(item => item.code == payment);
+      dialog.open();
+    }
   } catch (error) {
     console.log(error);
   }
@@ -213,11 +214,14 @@ const redirect = school => {
 
 const create = async () => {
   if (name.value && !loading.value) {
-    // if (schools.value.filter(school => school.type == 'owner' ).length) {
-    //   data.value.name = name.value;
-    //   data.value.date_now = Date.now();
-    //   dialog.open();
-    // } else {
+    if (schools.value.filter(school => school.type == 'owner' ).length) {
+      data.value = {
+        new: true,
+        name: name.value,
+        license: { date_now: Date.now() }
+      };
+      dialog.open();
+    } else {
       try {
         loading.value = true;
         const result = await api.post("/v1/schools/create", { name: name.value });
@@ -226,15 +230,14 @@ const create = async () => {
       } catch (error) {
         console.log(error);
       }
-    // }
+    }
   }
 };
 
 const createPayment = async school => {
   try {
     creating.value = true;
-    const result = await api.post("/v1/pay/create", { school, subscription: subscription.value });
-    console.log(result.data);
+    const result = await api.post("/v1/subscriptions/create", { school, name: name.value, subscription: subscription.value });
     const popup = window.open(result.data.checkout_url, 'popup', 'width=400,height=600');
     if (!popup) {
       window.location.href = result.data.checkout_url;
@@ -242,10 +245,12 @@ const createPayment = async school => {
       const checkPopupClosed = setInterval(async () => {
       if (popup.closed) {
         clearInterval(checkPopupClosed);
-        creating.value = false;;
+        creating.value = false;
         if (result.data.id) {
-          const response = await api.get("/v1/pay/check/" + result.data.id);
-          if(response.data.status == 'paid') {
+          const response = await api.get("/v1/subscriptions/check/" + result.data.id);
+          console.log(school, response);
+          if (!school) school = response.data.create.school;
+          if(response.data.data.status == 'paid') {
             store.commit("set", { key: "school", value: { code: school } });
             router.push(`/school/${school}?refresh=true`)
           };

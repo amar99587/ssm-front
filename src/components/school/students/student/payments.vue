@@ -1,7 +1,7 @@
 <template>
   <div dir="auto" class="bg-White rounded-v flex-1 flex flex-col gap-4 p-4">
     <div class="min-h-[24px] flex-between">
-      <h4 class="font-bold">payments <a v-if="getting && localPayments.length" class="animate-pulse">...</a></h4>
+      <h4 class="font-bold">Paiements<a v-if="getting && localPayments.length" class="animate-pulse">...</a></h4>
       <icon-app v-if="loading" icon="svg-spinners:ring-resize" />
       <icon-app v-else @click="compressed = !compressed" :icon="compressed ? 'fluent:caret-up-16-filled' : 'fluent:caret-down-16-filled'"
         class="block sm:hidden cursor-pointer" />
@@ -9,19 +9,19 @@
         :icon="!data.zoom ? 'ic:round-zoom-out-map' : 'ic:round-zoom-in-map'" class="hidden sm:block cursor-pointer" />
     </div>
 
-    <h6 v-if="!localPayments.length && getting" class="h-full flex-center pb-2">LOADING...</h6>
+    <h6 v-if="!localPayments.length && getting" class="h-full flex-center pb-2">{{ $t('loading...') }}</h6>
     <h6 v-else-if="!localPayments.length && !(query.course || query.total || query.created_at)"
-      class="h-full flex-center pb-2">no payments to display</h6>
+      class="h-full flex-center pb-2">aucun paiement à afficher</h6>
     <form @submit.prevent="submitForm" v-else-if="localPayments.length" class="min-h-[36px] grid-cols-4 gap-2"
       :class="{ 'hidden sm:grid': !compressed, 'grid': compressed }">
-      <input-app :value="query.course_name" @update="query.course_name = $event" type="search" placeholder="course"
+      <input-app :value="query.course_name" @update="query.course_name = $event" type="search" placeholder="cours"
         class="col-span-2" />
       <input-app :value="query.total" @update="query.total = Number($event)" type="number" placeholder="total"
         center />
       <input-app :value="query.created_at" @update="query.created_at = $event" @change="search()" type="date" center />
       <button @click="search()" class="hidden" />
     </form>
-    <div v-if="payments.length" class="h-full space-y-4" :class="{ 'hidden sm:block': !compressed }">
+    <div v-if="payments.length" class="h-full space-y-4 smooth" :class="{ 'opacity-60': getting && payments?.length, 'hidden sm:block': !compressed }">
       <div @scroll="loadmore" class="sm:h-full space-y-4 overflow-y-auto" :class="{ 'max-h-[250px]': !data.zoom }">
         <h5 v-for="(payment, index) in payments" :key="index" @click="more == payment.uid ? more = false : more = payment.uid"
           class="grid grid-cols-4 gap-2 bg-v bg-v-hover rounded-v py-2 cursor-pointer smooth">
@@ -33,28 +33,26 @@
           <div v-if="more != payment.uid" class="truncate text-center px-1">{{ $toDate(payment.created_at) }}</div>
           <div v-if="more == payment.uid" class="truncate col-span-4 px-2 space-y-2">
             <div class="text-center">{{payment.course_name}}</div>
-            <div>lessens price : {{payment.price}} DZD</div>
-            <div>number of lessons : {{payment.quantity}}</div>
-            <div>Expected total : {{payment.quantity * payment.price}} DZD</div>
-            <div>Final total : {{payment.total}} DZD</div>
-            <h6 class="text-center">created by <router-link :to="`/school/${data.school.code}/settings/users/${payment.user_code}`" class="link">{{ payment.user_name }}</router-link> at {{ $toDate(payment.created_at, "timestamp") }}</h6>
+            <div>prix des séances : {{payment.price}} DZD</div>
+            <div>nombre de séances : {{payment.quantity}}</div>
+            <div>Total attendu : {{payment.quantity * payment.price}} DZD</div>
+            <div>Total final : {{payment.total}} DZD</div>
+            <h6 class="text-center">créé par <router-link :to="`/school/${data.school.code}/settings/users/${payment.user_code}`" class="link uppercase">{{ payment.user_code }}</router-link> à {{ $toDate(payment.created_at, "timestamp") }}</h6>
           </div>
         </h5>
-        <h6 v-if="loadingMore && (typeof loadingMore != 'number')" class="text-center py-3">loading...</h6>
+        <h6 v-if="loadingMore && (typeof loadingMore != 'number')" class="text-center py-3">{{ $t('loading...') }}</h6>
       </div>
     </div>
-    <h6 v-else-if="localPayments.length && !payments.length" class="h-full flex-center pb-2">no data to display</h6>
+    <h6 v-else-if="localPayments.length && !payments.length" class="h-full flex-center pb-2">{{ $t("no data to display") }}</h6>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watchEffect } from "vue";
-import { useRouter } from "vue-router";
 import api from '@/plugins/axios.js';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const router = useRouter();
 
 const { data } = defineProps(["data"]);
 const emits = defineEmits(["zoom"]);
@@ -92,11 +90,6 @@ const getPayments = async () => {
     }
   }
 };
-
-// router.beforeEach(async (to, from, next) => {
-//   await getPayments();
-//   next();
-// });
 
 onMounted(async () => await getPayments());
 

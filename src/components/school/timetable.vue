@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div class="min-h-[96px] space-y-4">
       <div class="flex-between">
-        <div class="text-pro">timetable <a v-if="getting == 'timetables' && timetable.length" class="animate-pulse">...</a></div>
+        <div class="text-pro">Emploi du Temps <a v-if="getting == 'timetables' && timetable.length" class="animate-pulse">...</a></div>
         <!-- <icon-app v-if="loading" icon="svg-spinners:ring-resize" /> -->
       </div>
       <div class="flex-between gap-4 my-4">
@@ -11,9 +11,9 @@
         </div>
         <div class="w-full flex-between gap-4">
           <input-app :value="query.course" @update="query.course = $event" icon="solar:document-bold" accessKey="s"
-            type="search" placeholder="course name" />
+            type="search" placeholder="nom du cours" />
           <input-app :value="query.teacher" @update="query.teacher = $event" icon="fluent:person-24-filled"
-            placeholder="teacher name" class="hidden sm:flex" />
+            placeholder="nom du prof" class="hidden sm:flex" />
           <select-app :list="days" :value="current(query.date)?.day?.length ? current(query.date).day : query.day"
             @update="(e) => { (query.day = Number(e)); (Number(e) ? '' : query.date = ''); }"
             icon="fluent:calendar-ltr-24-filled" />
@@ -24,10 +24,10 @@
       </div>
     </div>
 
-    <dialog-app :ref="dialog.item" title="add a lesson" @close="dialog.close()" :canClose="!creating">
+    <dialog-app :ref="dialog.item" title="ajouter une nouvelle séance" @close="dialog.close()" :canClose="!creating">
       <div class="space-y-4">
         <div v-if="!newTimetable.course" class="space-y-2">
-          <label for="student fullname">Course <a class="text-red-500">*</a></label>
+          <label>Cours <a class="text-red-500">*</a></label>
           <select-app :list="courses.map(({ uid, name }) => ({ value: uid, text: name }))"
             @update="uid => newTimetable.course = courses.find(item => (item.uid == uid))"
             icon="fluent:calendar-ltr-24-filled" class="w-full" />
@@ -39,42 +39,42 @@
             <h5>{{ newTimetable.course.price }} DA</h5>
           </div>
           <h6 @click="newTimetable.course = null" class="mini-text cursor-pointer w-fit flex items-center grid-6 mx-auto">
-            change
+            changer
             <icon-app icon="humbleicons:exchange-vertical" class="w-4" />
           </h6>
         </div>
         <div class="flex-between">
-          <label for="student fullname">Fixed <a class="text-red-500">*</a></label>
+          <label>Fixé <a class="text-red-500">*</a></label>
           <switch-app :value="newTimetable.fixed" @update="newTimetable.fixed = $event" />
         </div>
         <div v-if="newTimetable.fixed" class="flex-between">
-          <label for="student fullname">Day <a class="text-red-500">*</a></label>
+          <label>Jour <a class="text-red-500">*</a></label>
           <select-app :list="days" :value="newTimetable.day" @update="newTimetable.day = $event"
             placeholder="select a course" icon="fluent:calendar-ltr-24-filled" class="max-w-fit" />
         </div>
         <div v-else class="flex-between">
-          <label for="student fullname">Date <a class="text-red-500">*</a></label>
+          <label>Date <a class="text-red-500">*</a></label>
           <input-app :value="newTimetable.date" @update="newTimetable.date = $event"
             icon="fluent:calendar-ltr-24-filled" type="date" class="max-w-fit" />
         </div>
         <div class="flex-between">
-          <label for="student fullname">Start at <a class="text-red-500">*</a></label>
+          <label>Commencer à <a class="text-red-500">*</a></label>
           <input-app :value="newTimetable.start_at" @update="newTimetable.start_at = $event" class="max-w-fit"
             type="time" center />
         </div>
         <div class="flex-between">
-          <label for="student fullname">End at <a class="text-red-500">*</a></label>
+          <label>Fin à <a class="text-red-500">*</a></label>
           <input-app :value="newTimetable.end_at" @update="newTimetable.end_at = $event" class="max-w-fit" type="time"
             center />
         </div>
         <div class="flex-center pt-4">
-          <btn-app text="create" @click="create(newTimetable)" :loading="creating" icon="fluent:add-12-filled" dark />
+          <btn-app :text="$t('create')" @click="addLesson(newTimetable)" :loading="creating" icon="fluent:add-12-filled" dark />
         </div>
       </div>
-      <button @click="create(newTimetable)" class="hidden" />
+      <button @click="addLesson(newTimetable)" class="hidden" />
     </dialog-app>
 
-    <div v-if="timetable.length" class="h-full space-y-4 overflow-y-auto">
+    <div v-if="timetable.length" :class="{ 'opacity-60': getting == 'timetables' && timetable.length }" class="h-full space-y-4 overflow-y-auto smooth">
       <div v-for="(courses, index) in second_array" class="grid gap-2">
         <div class="flex-between gap-4">
           <h3 class="font-medium min-w-fit">
@@ -98,10 +98,11 @@
               </div>
               <h5 class="flex-between gap-2">
                 <icon-app v-if="$store.getters.permission('timetable:create')"
-                  @click="deleteTimeTable(course.timetable_uid)"
+                  @click="deleteLesson(course.timetable_uid)"
                   :icon="loading ? 'svg-spinners:ring-resize' : 'fluent:delete-24-filled'"
                   class="opacity-0 group-hover:opacity-100 cursor-pointer hover:text-red-500 smooth min-w-4 min-h-4" />
                 <icon-app v-if="course.date" icon="material-symbols:magic-button" class="min-w-4 min-h-4" />
+                <icon-app v-if="course.day == 0" title="all days" icon="mingcute:refresh-4-fill" class="min-w-4 min-h-4" />
                 <div v-if="$route.query.uid == course.timetable_uid"
                   :class="{ 'hidden': $route.query.uid != course.timetable_uid }"
                   class="text-micro font-bold text-red-400 min-w-fit">NEW</div>
@@ -109,11 +110,11 @@
             </h6>
           </div>
         </div>
-        <h6 v-else class="h-full flex-center">no data to display</h6>
+        <h6 v-else class="h-full flex-center">{{ $t("no data to display") }}</h6>
       </div>
     </div>
-    <h6 v-else-if="getting == 'timetables' && !timetable.length" class="h-full flex-center">loading...</h6>
-    <h6 v-else class="h-full flex-center">no data to display</h6>
+    <h6 v-else-if="getting == 'timetables' && !timetable.length" class="h-full flex-center">{{ $t('loading...') }}</h6>
+    <h6 v-else class="h-full flex-center">{{ $t("no data to display") }}</h6>
   </div>
 </template>
 
@@ -136,7 +137,8 @@ const loading = ref(false);
 const creating = ref(false);
 
 const courses = ref(store.state.courses);
-const days = ["All Days", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const days = ["Tous les jours", "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+// const days = ["All Days", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const timetable = ref([]);
 
 const newTimetable = ref({
@@ -174,6 +176,7 @@ onMounted(async () => {
   try {
     getting.value = 'timetables';
     const { data } = await api.get("/v1/timetables/get/" + school.code);
+    // console.log(data);
     timetable.value = data;
     store.commit("set", { key: "timetables", value: data });
     getting.value = false;
@@ -184,8 +187,9 @@ onMounted(async () => {
 
 const current = (dateString) => {
   const date = new Date(dateString);
+  console.log(dateString);
   return {
-    day: days.indexOf(date.toLocaleDateString('en-US', { weekday: 'long' })),
+    day: days.map(i => i.toLowerCase()).indexOf(date.toLocaleDateString('fr-FR', { weekday: 'long' })),
     week: Math.ceil((date.getDate() - date.getDay()) / 7)
   };
 };
@@ -233,14 +237,14 @@ const second_array = computed((first_array = search.value) => {
   return result;
 });
 
-const create = async (e) => {
+const addLesson = async (e) => {
   if (!e.fixed) {
     e.day = current(e.date).day;
   } else {
     delete e["date"];
   }
-  console.log(e);
-  if (validated({arr: Object.values(e)}) && window.confirm("Do you want to create a new timetable ?")) {
+  // console.log(e);
+  if (validated({arr: Object.values(e)}) && window.confirm("Voulez-vous créer une nouvelle séance ?")) {
     try {
       creating.value = true;
       const result = await api.post("/v1/timetables/create", { ...e, course: e.course.uid });
@@ -260,8 +264,8 @@ const create = async (e) => {
   };
 }
 
-const deleteTimeTable = async (uid) => {
-  if (uid && window.confirm("Do you want to delete this timetable ?")) {
+const deleteLesson = async (uid) => {
+  if (uid && window.confirm("Voulez-vous supprimer cette séance ?")) {
     try {
       loading.value = true;
       const result = await api.delete("/v1/timetables/delete/" + uid);

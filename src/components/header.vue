@@ -23,7 +23,7 @@
                     <div class="flex-between gap-3">
                         <router-link :to="user ? '/account' : '/login'" @click="menu = false"
                             class="w-full bg-v bg-v-hover p-2 flex-between rounded-v smooth">
-                            <h5>account</h5>
+                            <h5>compte</h5>
                             <icon-app icon="fluent:person-24-filled" size="24" />
                         </router-link>
                         <div @click="mode(!dark)" :title="`Switch to ${dark ? 'Light' : 'Dark'} mode`"
@@ -32,36 +32,36 @@
                                 :icon="dark ? 'line-md:moon-filled-to-sunny-filled-loop-transition' : 'line-md:sunny-filled-loop-to-moon-filled-loop-transition'"
                                 size="24" />
                         </div>
-                        <div @click="changeLanguage(language == 'ar' ? 'fr' : 'ar')"
+                        <!-- <div @click="changeLanguage(language == 'ar' ? 'fr' : 'ar')"
                             :title="`Switch to ${language == 'ar' ? 'French' : 'Arabic'} language`"
                             class="h-9 min-w-[36px] bg-v bg-v-hover p-2.5 flex-between rounded-v cursor-pointer smooth">
                             {{ language == 'ar' ? 'Fr' : 'Ar' }}
-                        </div>
+                        </div> -->
                     </div>
 
                     <div @click="menu = false" class="grid gap-3 mt-4">
                         <button v-if="!installed" @click="install"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
-                            <h5>Install App</h5>
+                            <h5>Installer l'app</h5>
                             <icon-app icon="fluent:arrow-download-16-filled" size="24" />
                         </button>
                         <a href="https://proecole.com/fr/index.html" target="_blank"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
-                            <h5>help</h5>
+                            <h5>aide</h5>
                             <icon-app icon="fluent:question-circle-12-filled" size="24" />
                         </a>
                         <a href="https://proecole.com/fr/index.html" target="_blank"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
-                            <h5>contact us</h5>
+                            <h5>contactez-nous</h5>
                             <icon-app icon="fluent:chat-12-filled" size="24" />
                         </a>
                         <a href="mailto:contact@proecole.com" target="_blank"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
-                            <h5>report a bug</h5>
+                            <h5>signaler un bug</h5>
                             <icon-app icon="solar:bug-minimalistic-bold" size="24" />
                         </a>
                     </div>
-
+                    
                     <div class="text-center flex-between">
                         <div class="w-full border-b-[1px]" />
                         <h6 v-text="new Date().getFullYear()" class="w-10/12" />
@@ -88,14 +88,14 @@
                         <h3 class="-translate-y-2">menu</h3>
 
                         <div class="flex-between gap-3">
-                            <div v-if="!installed" @click="refresh()"
+                            <div v-if="installed" @click="refresh()"
                                 class="min-w-[36px] min-h-[36px] bg-v flex-center rounded-v">
                                 <icon-app icon="material-symbols:refresh-rounded" size="24" />
                             </div>
-                            <div @click="changeLanguage(language == 'ar' ? 'fr' : 'ar')"
+                            <!-- <div @click="changeLanguage(language == 'ar' ? 'fr' : 'ar')"
                                 class="h-9 min-w-[36px] bg-v p-2 flex-between rounded-v">
                                 {{ language == 'ar' ? 'Fr' : 'Ar' }}
-                            </div>
+                            </div> -->
                             <div @click="mode(!dark)" class="min-w-[36px] min-h-[36px] bg-v flex-center rounded-v">
                                 <icon-app
                                     :icon="dark ? 'line-md:moon-filled-to-sunny-filled-loop-transition' : 'line-md:sunny-filled-loop-to-moon-filled-loop-transition'"
@@ -103,7 +103,7 @@
                             </div>
                             <router-link :to="user ? '/account' : '/login'"
                                 class="w-full bg-v p-2 flex-between rounded-v">
-                                <h5>account</h5>
+                                <h5>compte</h5>
                                 <icon-app icon="fluent:person-24-filled" size="24" />
                             </router-link>
                         </div>
@@ -111,65 +111,62 @@
                         <div class="space-y-3 overflow-y-auto">
                             <div v-if="route.params.school && school" class="space-y-3 pt-4">
                                 <h4>{{ school.name }}</h4>
-                                <router-link :to="`/school/${route.params.school}/dashboard`"
+                                <router-link to="dashboard"
                                     class="bg-v p-2 flex-between rounded-v">
-                                    <h5>dashboard</h5>
+                                    <h5>tableau de bord</h5>
                                     <icon-app icon="fluent:grid-24-filled" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('students')"
-                                    :to="`/school/${route.params.school}/students`"
-                                    class="bg-v p-2 flex-between rounded-v">
-                                    <h5>students</h5>
+                                <router-link v-if="checkRole('students')" to="students" class="bg-v p-2 flex-between rounded-v">
+                                    <h5>les élèves</h5>
                                     <icon-app icon="fluent:people-12-filled" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('courses')" :to="`/school/${route.params.school}/courses`"
+                                <router-link v-if="checkRole('courses')" to="courses"
                                     class="bg-v p-2 flex-between rounded-v">
-                                    <h5>courses</h5>
+                                    <h5>les cours</h5>
                                     <icon-app icon="solar:documents-bold" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('timetable')"
-                                    :to="`/school/${route.params.school}/timetable`"
+                                <router-link v-if="checkRole('teachers')" to="teachers"
                                     class="bg-v p-2 flex-between rounded-v">
-                                    <h5>timetable</h5>
+                                    <h5>les profs</h5>
+                                    <icon-app icon="solar:documents-bold" size="24" />
+                                </router-link>
+                                <router-link v-if="checkRole('timetable')" to="timetable" class="bg-v p-2 flex-between rounded-v">
+                                    <h5>Emploi du Temps</h5>
                                     <icon-app icon="fluent:calendar-ltr-24-filled" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('finance')" :to="`/school/${route.params.school}/finance`"
+                                <router-link v-if="checkRole('finance')" to="finance"
                                     class="bg-v p-2 flex-between rounded-v">
-                                    <h5>finance</h5>
+                                    <h5>Finance</h5>
                                     <icon-app icon="fa6-solid:money-check-dollar" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('statistics')"
-                                    :to="`/school/${route.params.school}/statistics`"
-                                    class="bg-v p-2 flex-between rounded-v">
-                                    <h5>statistics</h5>
+                                <router-link v-if="checkRole('statistics')" to="statistics" class="bg-v p-2 flex-between rounded-v">
+                                    <h5>Statistiques</h5>
                                     <icon-app icon="majesticons:chart-pie" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('settings')"
-                                    :to="`/school/${route.params.school}/settings`"
-                                    class="bg-v p-2 flex-between rounded-v">
-                                    <h5>settings</h5>
+                                <router-link v-if="checkRole('settings')" to="settings" class="bg-v p-2 flex-between rounded-v">
+                                    <h5>Paramètres</h5>
                                     <icon-app icon="fluent:settings-48-filled" size="24" />
                                 </router-link>
                             </div>
 
-                            <h4 class="pt-4">More</h4>
+                            <h4 class="pt-4">Plus</h4>
                             <a v-if="!installed" @click="install" class="bg-v p-2 flex-between rounded-v">
-                                <h5>Install App</h5>
+                                <h5>Installer l'app</h5>
                                 <icon-app icon="fluent:arrow-download-16-filled" size="24" />
                             </a>
                             <a href="https://proecole.com/fr/index.html" target="_blank"
                                 class="bg-v p-2 flex-between rounded-v">
-                                <h5>help</h5>
+                                <h5>aide</h5>
                                 <icon-app icon="fluent:question-circle-12-filled" size="24" />
                             </a>
                             <a href="https://proecole.com/fr/index.html" target="_blank"
                                 class="bg-v p-2 flex-between rounded-v">
-                                <h5>contact us</h5>
+                                <h5>contactez-nous</h5>
                                 <icon-app icon="fluent:chat-12-filled" size="24" />
                             </a>
                             <a href="mailto:contact@proecole.com" target="_blank"
                                 class="bg-v p-2 flex-between rounded-v">
-                                <h5>report a bug</h5>
+                                <h5>signaler un bug</h5>
                                 <icon-app icon="solar:bug-minimalistic-bold" size="24" />
                             </a>
                         </div>
@@ -222,9 +219,20 @@ const dark = ref(localStorage.dark == "true");
 const language = ref(localStorage.language);
 
 const mode = i => {
+    function setManifest(darkMode) {
+        const manifestLink = document.querySelector('link[rel="manifest"]');
+        const themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
+        if (manifestLink) {
+            manifestLink.setAttribute('href', darkMode ? '/manifest-dark.json' : '/manifest-light.json');
+        }
+        if (themeColorMetaTag) {
+            themeColorMetaTag.setAttribute('content', darkMode  ? "#e5e7eb"  :  "#212937");
+        }
+    }
     dark.value = i;
     localStorage.dark = i;
     i ? app.classList.add("dark") : app.classList.remove("dark");
+    setManifest(i);
 };
 
 const changeLanguage = i => {

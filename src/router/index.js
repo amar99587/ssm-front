@@ -53,6 +53,12 @@ const routes = [
         component: () => import("../components/school/courses/course.vue")
       },
       {
+        path: "teachers",
+        name: "teachers",
+        meta: { rule: "teachers:access" },
+        component: () => import("../components/school/teachers.vue")
+      },
+      {
         path: "timetable",
         name: "timetable",
         meta: { rule: "timetable:access" },
@@ -93,11 +99,6 @@ const routes = [
         name: "user",
         meta: { rule: "settings:users:rules:access" },
         component: () => import("../components/school/settings/users/user.vue")
-      },
-      {
-        path: "settings/information",
-        name: "infomation",
-        component: () => import("../components/school/settings/information.vue")
       },
       {
         path: ":pathMatch(.*)*",

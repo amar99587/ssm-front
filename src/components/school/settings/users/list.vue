@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div class="space-y-4 min-h-[96px]">
       <div class="flex-between">
-        <div class="text-pro">users <a v-if="getting && users.length" class="animate-pulse">...</a></div>
+        <div class="text-pro">utilisateurs<a v-if="getting && users.length" class="animate-pulse">...</a></div>
         <icon-app v-if="loading" icon="svg-spinners:ring-resize" />
       </div>
 
@@ -12,7 +12,7 @@
         </router-link>
         <div class="w-full flex-between gap-4">
           <input-app :value="query" @update="query = $event" type="search" icon="fluent:people-12-filled"
-            placeholder="user code or name" accessKey="c" />
+            placeholder="code ou nom d'utilisateur" accessKey="c" />
         </div>
       </div>
     </div>
@@ -26,12 +26,12 @@
         <div class="w-full font-medium truncate">
             {{ `${code.toUpperCase()} : ${status == "active" ? data.name : "watting for user"}` }}
         </div>
-        <h6 v-text="code == store.state.user.code ? 'You' : (code == route.query.uid ? 'New' : '')" :class="{ 'text-red-400': code == route.query.uid, 'mini-text': code != route.query.uid }" class="min-w-fit flex-center mx-2" />
+        <h6 v-text="code == store.state.user.code ? 'Toi' : (code == route.query.uid ? 'New' : '')" :class="{ 'text-red-400': code == route.query.uid, 'mini-text': code != route.query.uid }" class="min-w-fit flex-center mx-2" />
       </router-link>
     </h5>
 
     <h6 v-else-if="!search.length || getting" class="h-full flex-center">
-      {{ getting ? "LOADING..." : "no data to display" }}
+      {{ $t(getting ? "loading..." : "no data to display") }}
     </h6>
 
   </div>

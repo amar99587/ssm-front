@@ -12,6 +12,10 @@
   "create school": "إنشاء مدرسة",
   "enter here your school name": "أدخل هنا اسم مدرستك",
   "create": "إنشاء",
+  "save": "حفظ",
+  "cancel": "إلغاء",
+  "edit": "التعديل",
+  "created at": "أنشئت في",
   "or": "أو",
   "link to school": "ربط بمدرسة",
   "enter here the school code": "أدخل هنا رمز المدرسة",
@@ -20,5 +24,6 @@
   "reach out to us": "التواصل معنا",
   "your satisfaction is our priority!": "رضاكم هو أولويتنا!",
   "by clicking 'OK' you will be logged out from your account": "بالنقر على 'موافق'، سيتم تسجيل خروجك من حسابك",
-  "confirmeUninkSChool": "هل أنت متأكد أنك تريد إلغاء ربط مدرسة {schoolname}؟"
+  "confirmeUninkSChool": "هل أنت متأكد أنك تريد إلغاء ربط مدرسة {schoolname}؟",
+  "no data to display": "لا توجد بيانات لعرضها"
 }

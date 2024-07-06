@@ -5,7 +5,7 @@
         <h3>{{ title }}</h3>
         <icon-app @click="emits('close', $event.target.value)" :class="{ 'cursor-pointer': canClose }" icon="fa6-solid:xmark" size="24" />
       </div>
-      <form @submit.prevent="submitForm" class="space-y-2">
+      <form @submit.prevent="submitForm" class="space-y-4">
         <slot />
       </form>
     </div>
