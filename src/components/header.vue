@@ -43,7 +43,7 @@
                         <button v-if="!installed" @click="install"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
                             <h5>Installer l'app</h5>
-                            <icon-app icon="fluent:arrow-download-16-filled" size="24" />
+                            <icon-app icon="line-md:download-loop" size="24" />
                         </button>
                         <a href="https://proecole.com/fr/index.html" target="_blank"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
@@ -152,7 +152,7 @@
                             <h4 class="pt-4">Plus</h4>
                             <a v-if="!installed" @click="install" class="bg-v p-2 flex-between rounded-v">
                                 <h5>Installer l'app</h5>
-                                <icon-app icon="fluent:arrow-download-16-filled" size="24" />
+                                <icon-app icon="line-md:download-loop" size="24" />
                             </a>
                             <a href="https://proecole.com/fr/index.html" target="_blank"
                                 class="bg-v p-2 flex-between rounded-v">
@@ -266,7 +266,7 @@ const install = () => {
 };
 
 const refresh = () => {
-    if (window.confirm('are you sure you want to reload the page ?')) {
+    if (window.confirm('êtes-vous sûr de vouloir actualiser la page ?')) {
         window.location.reload();
     }
 };

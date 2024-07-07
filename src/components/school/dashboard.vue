@@ -66,14 +66,14 @@
                     </div>
                     <div class="space-y-2 pt-4">
                         <btn-app text="payer" @click="payment(school.code)" :loading="creating" icon="twemoji:credit-card" class="mx-auto" dark />
-                        <h6 @click="addPayment = false" class="text-center mini-text cursor-pointer">cancel</h6>
+                        <h6 @click="() => { addPayment = false; creating = false; }" class="text-center mini-text cursor-pointer">cancel</h6>
                     </div>
                 </div>
                 <div v-else class="space-y-4">        
                     <div class="flex-between">
                         <label>abonnement</label>
                         <h6 class="mini-text">
-                            expire in {{ toDate(school.license.end_at) }}
+                            expire le {{ toDate(school.license.end_at) }}
                         </h6>
                     </div>
                     <btn-app @click="addPayment = true" text="renouveau" icon="fluent:add-12-filled" class="mx-auto" />
@@ -237,7 +237,7 @@ const copy = text => {
 };
 
 const update = async () => {
-    if (name.value && window.confirm("Do you want to change the school name ?")) {
+    if (name.value && window.confirm("Voulez-vous changer le nom de l'école ?")) {
         try {
             creating.value = true;
             addPayment.value = false;
@@ -288,7 +288,7 @@ const payment = async code => {
                                 end_left: +(((newLicense.end_at - Date.now()) / day).toFixed())
                             }
                         }});
-                        alert(`Payment has been => ${response.data.data.status}`)
+                        response.data.data.status == 'paid' && alert('Le paiement a été effectué avec succès');
                         creating.value = false;
                         addPayment.value = false;
                         console.log(school);

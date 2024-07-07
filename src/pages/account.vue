@@ -225,6 +225,7 @@ const create = async () => {
       try {
         loading.value = true;
         const result = await api.post("/v1/schools/create", { name: name.value });
+        console.log(result);
         store.commit("set", { key: "school", value: { code: result.data.school_code } });
         router.push(`/school/${result.data.school_code}/dashboard`);
       } catch (error) {
@@ -245,16 +246,15 @@ const createPayment = async school => {
       const checkPopupClosed = setInterval(async () => {
       if (popup.closed) {
         clearInterval(checkPopupClosed);
-        creating.value = false;
         if (result.data.id) {
           const response = await api.get("/v1/subscriptions/check/" + result.data.id);
-          console.log(school, response);
-          if (!school) school = response.data.create.school;
+          school = school || response.data.create.school;
           if(response.data.data.status == 'paid') {
             store.commit("set", { key: "school", value: { code: school } });
             router.push(`/school/${school}?refresh=true`)
           };
         }
+        creating.value = false;
       }
     }, 500);
     }
