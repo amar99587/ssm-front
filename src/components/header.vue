@@ -111,39 +111,39 @@
                         <div class="space-y-3 overflow-y-auto">
                             <div v-if="route.params.school && school" class="space-y-3 pt-4">
                                 <h4>{{ school.name }}</h4>
-                                <router-link to="dashboard"
+                                <router-link :to="`/school/${school.code}/dashboard`"
                                     class="bg-v p-2 flex-between rounded-v">
                                     <h5>tableau de bord</h5>
                                     <icon-app icon="fluent:grid-24-filled" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('students')" to="students" class="bg-v p-2 flex-between rounded-v">
+                                <router-link v-if="checkRole('students')" :to="`/school/${school.code}/students`" class="bg-v p-2 flex-between rounded-v">
                                     <h5>les élèves</h5>
                                     <icon-app icon="fluent:people-12-filled" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('courses')" to="courses"
+                                <router-link v-if="checkRole('courses')" :to="`/school/${school.code}/courses`"
                                     class="bg-v p-2 flex-between rounded-v">
                                     <h5>les cours</h5>
                                     <icon-app icon="solar:documents-bold" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('teachers')" to="teachers"
+                                <router-link v-if="checkRole('teachers')" :to="`/school/${school.code}/teachers`"
                                     class="bg-v p-2 flex-between rounded-v">
                                     <h5>les profs</h5>
                                     <icon-app icon="solar:documents-bold" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('timetable')" to="timetable" class="bg-v p-2 flex-between rounded-v">
+                                <router-link v-if="checkRole('timetable')" :to="`/school/${school.code}/timetable`" class="bg-v p-2 flex-between rounded-v">
                                     <h5>Emploi du Temps</h5>
                                     <icon-app icon="fluent:calendar-ltr-24-filled" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('finance')" to="finance"
+                                <router-link v-if="checkRole('finance')" :to="`/school/${school.code}/finance`"
                                     class="bg-v p-2 flex-between rounded-v">
                                     <h5>Finance</h5>
                                     <icon-app icon="fa6-solid:money-check-dollar" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('statistics')" to="statistics" class="bg-v p-2 flex-between rounded-v">
+                                <router-link v-if="checkRole('statistics')" :to="`/school/${school.code}/statistics`" class="bg-v p-2 flex-between rounded-v">
                                     <h5>Statistiques</h5>
                                     <icon-app icon="majesticons:chart-pie" size="24" />
                                 </router-link>
-                                <router-link v-if="checkRole('settings')" to="settings" class="bg-v p-2 flex-between rounded-v">
+                                <router-link v-if="checkRole('settings')" :to="`/school/${school.code}/settings`" class="bg-v p-2 flex-between rounded-v">
                                     <h5>Paramètres</h5>
                                     <icon-app icon="fluent:settings-48-filled" size="24" />
                                 </router-link>

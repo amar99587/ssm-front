@@ -8,22 +8,22 @@
 
       <dialog-app :ref="dialog.item" title="ajouter un nouveau cours" @close="dialog.close()" :canClose="!creating">
         <div class="space-y-2">
-          <label for="name">nom <a class="text-red-500">*</a></label>
+          <label for="nom du cours">nom du cours <a class="text-red-500">*</a></label>
           <input-app :value="course.name" @update="course.name = $event" 
             required placeholder="entrez le nom du cours ici" icon="solar:document-bold" />
         </div>
         <div class="space-y-2">
-          <label for="profs">prof <a class="text-red-500">*</a></label>
+          <label for="Nom de prof">Nom de prof <a class="text-red-500">*</a></label>
           <input-app :value="course.teacher" @update="course.teacher = $event" :datalist="courses.map(({ teacher }) => teacher)"
             required placeholder="entrez le nom du prof du cours ici" icon="fluent:person-24-filled" />
         </div>
         <div class="space-y-2">
-          <label for="price">le prix de séance <a class="text-red-500">*</a></label>
+          <label for="price">prix de séance <a class="text-red-500">*</a></label>
           <input-app :value="course.price" @update="course.price = $event" type="number"
             required placeholder="entrez le prix de séance ici" icon="material-symbols:attach-money-rounded" />
           <h6 class="pb-2 mini-text">
               <a class="font-bold">Remarque : </a>Le prix de la séance est <a class="font-bold">le coût d'une seule séance</a>. 
-              Par exemple, si le prix mensuel du cours est de 2000 DA pour 4 cours, le prix du cours est de 500 DA.</h6>
+              Par exemple, si le prix mensuel du cours est de 2000 DA pour 4 séances, le prix du séance est de 500 DA.</h6>
           </div>
           <div class="flex-center pt-4">
             <btn-app :text="$t('create')" @click="create(course)" :loading="creating" icon="fluent:add-12-filled" dark />

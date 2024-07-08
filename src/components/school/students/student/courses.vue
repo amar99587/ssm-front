@@ -69,7 +69,7 @@
             placeholder="prix" center />
         </div>
       </div> 
-      <btn-app class="min-w-fit" @click="create(selected)" text="enregistrer" dark :loading="loading"
+      <btn-app class="min-w-fit" @click="create(selected)" text="payer" dark :loading="loading"
         icon="fluent:add-12-filled" />
     </form>
   </div>
