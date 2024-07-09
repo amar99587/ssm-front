@@ -40,7 +40,7 @@
             <h6 @click="edit = false" class="cursor-pointer">{{ $t('cancel') }}</h6>
             <btn-app @click="update(student)" text="enregistrer" dark :loading="loading" icon="fluent:add-12-filled" />
         </div>
-        <h6 v-if="$store.getters.permission('students:information:edit') && !data.zoom && !getting && !edit"
+        <h6 v-if="$store.getters.permission('students:information:edit') && compressed && !getting && !edit"
             @click="edit = true" class="w-full min-h-[16px] text-center cursor-pointer">{{ $t('edit') }}</h6>
     </div>
 </template>
