@@ -1,12 +1,12 @@
 <template>
     <div dir="auto" class="bg-White rounded-v flex-1 flex flex-col gap-4 p-4">
         <div @click="compressed = !compressed" class="min-h-[24px] flex-between">
-            <h4 class="font-bold">{{ !compressed && student?.name ? student.name : "informations" }}<a v-if="getting && student.uid" class="animate-pulse">...</a></h4>
+            <h4 class="font-bold truncate">{{ !compressed && student?.name ? student.name : "informations" }}<a v-if="getting && student.uid" class="animate-pulse">...</a></h4>
             <icon-app
                 :icon="compressed ? 'fluent:caret-up-16-filled' : 'fluent:caret-down-16-filled'"
-                class="block sm:hidden cursor-pointer" />
+                class="block sm:hidden cursor-pointer min-w-fit" />
             <icon-app @click="emits('zoom')" :icon="!data.zoom ? 'ic:round-zoom-out-map' : 'ic:round-zoom-in-map'"
-                class="hidden sm:block cursor-pointer" />
+                class="hidden sm:block cursor-pointer min-w-fit" />
         </div>
         <h6 v-if="getting && !student.uid" class="h-full flex-center pb-2">{{ $t('loading...') }}</h6>
         <div v-else class="sm:block h-full overflow-y-auto smooth" :class="{ 'opacity-60': getting && student.uid, 'hidden': !compressed, 'block': compressed }">
@@ -37,11 +37,11 @@
         </div>
         <div v-if="$store.getters.permission('students:information:edit') && edit"
             class="gap-4 min-h-[36px] justify-between items-end" :class="{ 'hidden': !compressed, 'flex': compressed }">
-            <h6 @click="edit = false" class="cursor-pointer">cancel edit</h6>
+            <h6 @click="edit = false" class="cursor-pointer">{{ $t('cancel') }}</h6>
             <btn-app @click="update(student)" text="enregistrer" dark :loading="loading" icon="fluent:add-12-filled" />
         </div>
-        <h6 v-if="$store.getters.permission('students:information:edit') && compressed && !getting && !edit"
-            @click="edit = true" class="w-full min-h-[16px] text-center cursor-pointer">modifier</h6>
+        <h6 v-if="$store.getters.permission('students:information:edit') && !data.zoom && !getting && !edit"
+            @click="edit = true" class="w-full min-h-[16px] text-center cursor-pointer">{{ $t('edit') }}</h6>
     </div>
 </template>
 

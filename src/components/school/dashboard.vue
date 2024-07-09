@@ -24,9 +24,9 @@
                         </div>
                     </div>
                     <div v-else class="space-y-2">
-                        <div class="w-fit flex gap-2 items-start mx-auto">
+                        <div class="flex justify-center gap-2 items-start mx-auto">
                             <icon-app icon="fluent:edit-12-filled" class="w-3 opacity-0" />
-                            <h2 class="font-medium">{{ school.name }}</h2>
+                            <h2 class="max-w-[80%] font-medium">{{ school.name }}</h2>
                             <icon-app @click="editSchool = true" icon="fluent:edit-12-filled" class="w-3 cursor-pointer" />
                         </div>                        
                         <h4 class="uppercase tracking-wider">{{ school.code }}</h4>

@@ -66,21 +66,21 @@
                 </div>
             </div>
             <h5 v-if="payments.rows.length" class="px-2 grid grid-cols-3 sm:grid-cols-7 gap-4 text-center">
-                <div class="truncate cursor-pointer">Utilisateur</div>
-                <div class="truncate cursor-pointer">Cours</div>                
-                <div class="hidden sm:block truncate cursor-pointer">Prof</div>
-                <div class="hidden sm:block truncate cursor-pointer">Prix</div>
-                <div class="hidden sm:block truncate cursor-pointer">Quantité</div>
-                <div class="truncate cursor-pointer">Total</div>
-                <div class="hidden sm:block truncate cursor-pointer">{{ $t('created at') }}</div>
+                <div class="truncate">Utilisateur</div>
+                <div class="truncate">Cours</div>                
+                <div class="hidden sm:block truncate">Prof</div>
+                <div class="hidden sm:block truncate">Prix</div>
+                <div class="hidden sm:block truncate">Quantité</div>
+                <div class="truncate">Total</div>
+                <div class="hidden sm:block truncate">{{ $t('created at') }}</div>
             </h5>
         </div>
         <h5 v-if="payments.rows.length" @scroll="loadmore" class="h-full space-y-4 overflow-y-auto">
-            <h5 v-for="(item, index) in payments.rows" :key="index" @click="moreInfo = item.uid" class="bg-v bg-v-hover rounded-v p-2 grid grid-cols-3 sm:grid-cols-7 gap-4 text-center overflow-y-auto smooth">
+            <h5 v-for="(item, index) in payments.rows" :key="index" @click="moreInfo = item.uid" class="bg-v bg-v-hover rounded-v p-2 grid grid-cols-3 sm:grid-cols-7 gap-4 text-center overflow-y-auto cursor-pointer smooth">
                 <div class="truncate">{{ item.user_code }}</div>
                 <div class="truncate">{{ item.course_name }}</div>                
                 <div class="hidden sm:block truncate">{{ item.teacher_name }}</div>
-                <div class="hidden sm:block truncate" :class="{ 'font-bold text-orange-500': item.price <= 0 }">{{ item.price }} <a class="text-xs font-medium">DZD</a></div>
+                <div class="hidden sm:block truncate" :class="{ 'font-bold text-orange-500': item.price <= 0 }">{{ item.price.toString().replace(/\.00$/, '') }} <a class="text-xs font-medium">DZD</a></div>
                 <div class="hidden sm:block truncate" :class="{ 'font-bold text-orange-500': item.quantity <= 0 }">{{ item.quantity }}</div>
                 <div class="truncate" :class="{ 'font-bold text-blue-500': item.price * item.quantity > item.total, 'font-bold text-orange-500': item.total <= 0 }">{{ item.total }} <a class="text-xs font-medium">DZD</a></div>
                 <div class="hidden sm:block truncate">{{ toDate(item.created_at, "timestamp") }}</div>

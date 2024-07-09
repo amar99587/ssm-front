@@ -1,22 +1,25 @@
 <template>
     <div v-bind="$attrs" class="hidden" />
     <div class="w-full min-h-fit flex flex-col gap-4">
-        <div class="min-h-[212px] bg-White grid gap-4 rounded-v p-4 w-full">
-            <h4 class="font-bold">informations<a v-if="getting.course && course?.uid" class="animate-pulse">...</a></h4>
+        <div :class="{ 'min-h-[212px]': !close }" class="bg-White grid gap-4 rounded-v p-4 w-full">
+            <div @click="close = !close" class="min-h-[24px] flex-between">
+                <h4 class="font-bold truncate">{{ close && course?.name ? course.name : "information" }}<a v-if="getting.course && course?.uid" class="animate-pulse">...</a></h4>
+                <icon-app :icon="close ? 'fluent:caret-down-16-filled' : 'fluent:caret-up-16-filled'" class="min-w-fit cursor-pointer" />
+            </div>
             <h6 v-if="getting.course && !course?.uid" class="text-center">{{ $t('loading...') }}</h6>
-            <form v-else @submit.prevent="submitForm" class="w-full grid gap-4 smooth" :class="{ 'opacity-60': getting.course && course?.uid }">
+            <form v-else-if="!close" @submit.prevent="submitForm" class="w-full grid gap-4 smooth" :class="{ 'opacity-60': getting.course && course?.uid }">
                 <div class="w-full grid grid-cols-2 gap-4">
                     <input-app :value="course.name" @update="course.name = $event" :readonly="!course.edit" icon="solar:document-bold" placeholder="nom complet du cours" class="col-span-2" />
                     <input-app :value="course.teacher" @update="course.teacher = $event" :readonly="!course.edit" :datalist="store.state.courses.map(({ teacher }) => teacher)" icon="fluent:person-24-filled" placeholder="nom du prof" />
-                    <input-app :value="course.price" @update="course.price = $event" :readonly="!course.edit" icon="solar:tag-price-bold" type="number" center placeholder="prix de séance" />
+                    <input-app :value="course?.price?.toString().replace(/\.00$/, '')" @update="course.price = $event" :readonly="!course.edit" icon="solar:tag-price-bold" type="number" center placeholder="prix de séance" />
                 </div>
-                <div class="flex-between min-h-[36px]">
-                    <h6 class="first-letter:lowercase">{{ $t('created at') +' '+ $toDate(course?.created_at, 'timestamp') }}</h6>
-                    <btn-app v-if="can.edit.course && !course.edit" @click="course.edit = true" :text="$t('edit')" icon="fluent:edit-12-filled" class="min-w-fit" />
-                    <div v-else-if="can.edit.course && course.edit" class="w-fit flex-between gap-4">
-                        <btn-app @click="course.edit = false" :text="$t('cancel')" icon="fa6-solid:xmark" class="min-w-fit" />
-                        <btn-app @click="update.course(course)" :text="$t(course?.uid ? 'save' : 'create')" dark :loading="loading.course" icon="fluent:add-12-filled" class="min-w-fit" />
+                <div class="flex-between text-center sm:text-left h-[36px]">
+                    <h6 :class="{ 'hidden sm:block': course.edit }" class="first-letter:lowercase">{{ $t('created at') +' '+ $toDate(course?.created_at, 'timestamp') }}</h6>
+                    <div v-if="can.edit.course && course.edit" class="w-fit flex-between gap-4 mx-auto sm:mx-0">
+                        <btn-app @click="update.course(course)" :text="$t(course?.uid ? 'save' : 'create')" dark :loading="loading.course" icon="fluent:add-12-filled" />
+                        <btn-app @click="course.edit = false" :text="$t('cancel')" icon="fa6-solid:xmark" />
                     </div>
+                    <btn-app v-else-if="can.edit.course && !course.edit && !getting.course" @click="course.edit = true" :text="$t('edit')" icon="fluent:edit-12-filled" />
                 </div>
             </form>
         </div>
@@ -117,6 +120,8 @@ const can = computed(() => {
         }
     }
 });
+
+const close = ref(false);
 
 const course = ref({
     school: school.code,

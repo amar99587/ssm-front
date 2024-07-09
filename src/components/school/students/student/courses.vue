@@ -41,7 +41,7 @@
           :class="{ 'bg-dark': selected.course == item.uid, 'bg-v bg-v-hover': selected.course != item.uid }">
           <div dir="auto"  class="w-full truncate">{{ item.name }}</div>
           <div class="min-w-fit flex-between gap-4">
-            <h5 class="min-w-fit">{{ item.price }} DZD</h5>
+            <h5 class="min-w-fit">{{ item.price.toString().replace(/\.00$/, '') }} DZD</h5>
             <div class="min-w-[1rem] h-4 rounded-full smooth"
               :style="`background: ${store.state.payments.some(obj => obj.course == item.uid && obj.student == data.student.uid) ? '#0B6E4F' : '#FA9F42'};`"></div>
           </div>
@@ -51,25 +51,14 @@
       </div>
     </div>
     <form @submit.prevent="submitForm" v-if="store.getters.permission('students:payments:add') && !getting && selected.course"
-      class="sm:flex gap-4 min-h-[36px]" :class="{ 'hidden': !compressed, 'flex': compressed }">
+      class="grid sm:flex gap-4 min-h-[36px]" :class="{ 'hidden': !compressed, 'flex': compressed }">
       <div class="w-full flex-between gap-2 sm:gap-4">
-        <div class="w-1/3">
-          <input-app class="sm:hidden" required :readonly="loading" :value="selected.quantity" @update="totalCalculation($event, selected.price)"
-            type="number" placeholder="séances" center />
-          <input-app class="hidden sm:flex" required :readonly="loading" :value="selected.quantity" @update="totalCalculation($event, selected.price)"
-            icon="streamline:tickets-solid" type="number" placeholder="séances" center />
-        </div>
-        <icon-app icon="fa6-solid:xmark" size="24" />
-        <div class="w-2/3">
-          <input-app class="sm:hidden" required :readonly="loading" :value="selected.quantity ? selected.total : selected.price"
-            @update="selected.total = $event" icon="material-symbols:attach-money-rounded" type="number"
-            placeholder="prix" />
-          <input-app class="hidden sm:flex" required :readonly="loading" :value="selected.quantity ? selected.total : selected.price"
-            @update="selected.total = $event" icon="material-symbols:attach-money-rounded" type="number"
-            placeholder="prix" center />
-        </div>
+        <input-app required :readonly="loading" :value="selected.quantity" @update="$event >= 1 && totalCalculation($event, selected.price)"
+          icon="streamline:tickets-solid" type="number" min="1" placeholder="séances" center />
+        <icon-app icon="ic:round-double-arrow" class="min-w-fit" size="24" />
+        <input-app required readonly center :value="(selected.quantity ? selected.total : selected.price).toString().replace(/\.00$/, '')" icon="material-symbols:attach-money-rounded" type="number" placeholder="prix total" />
       </div> 
-      <btn-app class="min-w-fit" @click="create(selected)" text="payer" dark :loading="loading"
+      <btn-app class="min-w-fit mx-auto" @click="create(selected)" text="payer" dark :loading="loading"
         icon="fluent:add-12-filled" />
     </form>
   </div>
@@ -136,7 +125,7 @@ onMounted(async () => {
   }
 });
 
-const totalCalculation = (quantity,price) => {
+const totalCalculation = (quantity, price) => {
   selected.value.quantity = quantity;
   selected.value.total = quantity * price;
 };
