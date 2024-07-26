@@ -61,17 +61,16 @@
             :class="{ 'opacity-60': getting && schools.length }"
             class="h-240 grid gap-4 border-v rounded-v p-4 hover:bg-v smooth cursor-pointer">
             <div class="flex-between">
-              <icon-app v-if="school.type != 'owner'"
-                :icon="school.status == 'inactive' ? 'mingcute:stopwatch-line' : 'material-symbols:attach-file-rounded'"
-                size="16" />
-              <icon-app v-if="school.license.end_left <= 3" icon="ep:warning-filled" class="text-red-500" size="16"
-                title="license expires" />
-              <icon-app v-if="school.status == 'inactive' || (school.type != 'owner' && school.license.end_left <= -30)" @click="deleteLink(school)"
-                icon="fluent:delete-24-filled" class="hover:text-red-500 smooth" size="16" />
-              <icon-app v-if="loading == school.code" @click="deleteLink(school)" icon="svg-spinners:ring-resize" size="16" />
+              <icon-app v-if="school.type != 'owner'" :icon="school.status == 'inactive' ? 'mingcute:stopwatch-line' : 'material-symbols:attach-file-rounded'" size="16" />
+              <icon-app v-if="school.license.end_left <= 3" icon="ep:warning-filled" class="text-red-500" size="16" title="license expires" />
+              <icon-app v-if="school.status == 'inactive' || (school.type != 'owner' && school.license.end_left <= -30)" @click="deleteLink(school)" icon="fluent:delete-24-filled" class="hover:text-red-500 smooth" size="16" />
             </div>
             <h2 class="w-full text-center my-2 truncate" :class="{ 'opacity-50': school.status == 'inactive' }">{{ school.name }}</h2>
-            <h6 class="mx-auto mini-text uppercase">{{ school.code }}</h6>
+            <h6 class="flex-center gap-2 mx-auto mini-text uppercase">
+              <icon-app v-if="loading == school.code" class="invisible" icon="svg-spinners:ring-resize" size="16" />
+              {{ school.code }}
+              <icon-app v-if="loading == school.code" icon="svg-spinners:ring-resize" size="16" />
+            </h6>
           </div>
         </div>
         <hr>
@@ -84,6 +83,7 @@
           {{ $t('click') }} <a @click="more = true" class="link">{{ $t('here') }}</a>.
         </h6>
       </div>
+
       <h2 v-if="schools.length && more">{{ $t('more schools') }}</h2>
       <div v-if="schools && (more || !schools.length)" class="grid sm:block gap-8">
         <div class="grid sm:grid-cols-11 gap-4 mx-auto sm:my-10">

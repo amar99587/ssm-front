@@ -5,15 +5,16 @@
                 <div class="text-pro">tableau de bord</div>
                 <div @click="school.link.type == 'owner' && dialog.open()"
                     class="w-fit flex-between gap-4 hover:underline cursor-pointer smooth">
-                    <h6 v-if="license_end < (date_now + day * 10)" class="hidden sm:block">{{ license_end_left }} jours avant la fin de l'abonnement</h6>
-                    <icon-app v-if="school.link.type == 'owner'" icon="ep:warning-filled" class="w-3" :class="{ 'text-red-500': 3 >= license_end_left }"
-                        size="16" />
+                    <h6 v-if="school.license.end_at < (school.license.date_now + day * 10)" class="hidden sm:block">
+                        {{ school.license.end_left }} jours avant la fin de l'abonnement
+                    </h6>
+                    <icon-app v-if="school.link.type == 'owner'" icon="ep:warning-filled" class="w-3" :class="{ 'text-red-500': 3 >= school.license.end_left }" size="16" />
                 </div>
             </div>
-            <h6 v-if="license_end < (date_now + day * 10)" @click="school.link.type == 'owner' && dialog.open()" class="sm:hidden text-center">{{ license_end_left }} jours avant la fin de l'abonnement</h6>
-
-            <dialog-app :ref="dialog.item" title="information" @close="!creating ? dialog.close() : false"
-                :canClose="!creating">
+            <h6 v-if="school.license.end_at < (school.license.date_now + day * 10)" @click="school.link.type == 'owner' && dialog.open()" class="sm:hidden text-center">
+                {{ school.license.end_left }} jours avant la fin de l'abonnement
+            </h6>
+            <dialog-app :ref="dialog.item" title="information" @close="!creating ? dialog.close() : false" :canClose="!creating">
                 <div class="text-center grid gap-2 pt-4 pb-6">
                     <div v-if="editSchool" class="space-y-2">
                         <input-app :value="name == null ? school.name : name" @update="name = $event" icon="solar:square-academic-cap-bold" placeholder="entrez ici le nom de votre école" />
@@ -118,7 +119,7 @@ import api from '@/plugins/axios.js';
 import { toDate } from '@/utilities/date';
 import store from '@/store';
 
-const { school } = defineProps(["school"]);
+const { school } = defineProps([ "school" ]);
 
 const Routes = ref([
     {
@@ -207,10 +208,6 @@ const editSchool = ref();
 const addPayment = ref();
 const day = 1000 * 60 * 60 * 24;
 
-const license_end = computed(() => toDate(school.license_end, 'milliseconds'));
-const date_now = computed(() => toDate('now', 'milliseconds'));
-const license_end_left = computed(() => ((license_end.value - date_now.value) / day).toFixed());
-
 const dialog = {
     item: ref(null),
     open: () => dialog.item.value.open(),
@@ -242,7 +239,7 @@ const update = async () => {
             creating.value = true;
             addPayment.value = false;
             const result = await api.post("/v1/schools/update", { school: school.code, name: name.value });
-            console.log(result);
+            // console.log(result);
             const newSchools = store.state.schools.map(item => 
                 item.code == school.code ? { ...item, name: name.value } : item
             );
@@ -270,17 +267,17 @@ const payment = async code => {
                     clearInterval(checkPopupClosed);
                     if (result.data.id) {
                         const response = await api.get("/v1/subscriptions/check/" + result.data.id);
-                        console.log(response);
+                        // console.log(response);
                         const newLicense = {
                             end_at: Date.now() + (day * school.license.end_left) + (day * 30 * subscription.value.duration),
                             date_now: Date.now()
                         }
-                        console.log({
-                            ...newLicense,
-                            end_left: +(((newLicense.end_at - Date.now()) / day).toFixed())
-                        });
+                        // console.log({
+                        //     ...newLicense,
+                        //     end_left: +(((newLicense.end_at - Date.now()) / day).toFixed())
+                        // });
                         store.commit("set", { key: "school", value: 
-                        { 
+                        {
                             ...school,
                             license_end: new Date(newLicense.end_at).toISOString(),
                             license: {
@@ -291,7 +288,7 @@ const payment = async code => {
                         response.data.data.status == 'paid' && alert('Le paiement a été effectué avec succès');
                         creating.value = false;
                         addPayment.value = false;
-                        console.log(school);
+                        // console.log(school);
                     }
                 }
             }, 500);

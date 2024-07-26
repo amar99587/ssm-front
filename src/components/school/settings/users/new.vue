@@ -97,6 +97,18 @@ const changeRule = (category, rule, newValue) => {
                     rules.value["students:courses:access"] = true;
                     rules.value["students:payments:access"] = true;
                     break;
+                case "students:payments:discount":
+                    rules.value["students:courses:access"] = true;
+                    rules.value["students:payments:add"] = true;
+                    rules.value["students:payments:access"] = true;
+                    rules.value["students:payments:payback"] = true;
+                    break;
+                case "students:payments:payback":
+                    rules.value["students:courses:access"] = true;
+                    rules.value["students:payments:add"] = true;
+                    rules.value["students:payments:access"] = true;
+                    rules.value["students:payments:payback"] = true;
+                    break;
             }
         } else if (category == "courses") {
             if (rule != "courses:access") {
@@ -141,6 +153,9 @@ const changeRule = (category, rule, newValue) => {
                             rules.value[key] = false;
                         }
                     }
+                    break;
+                case "students:payments:payback":
+                    rules.value["students:payments:discount"] = false;
                     break;
             }
         } else if (category == "courses") {

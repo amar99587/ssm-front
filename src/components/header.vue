@@ -90,7 +90,7 @@
                         <div class="flex-between gap-3">
                             <div v-if="installed" @click="refresh()"
                                 class="min-w-[36px] min-h-[36px] bg-v flex-center rounded-v">
-                                <icon-app icon="material-symbols:refresh-rounded" size="24" />
+                                <icon-app icon="iconamoon:synchronize-bold" size="24" />
                             </div>
                             <!-- <div @click="changeLanguage(language == 'ar' ? 'fr' : 'ar')"
                                 class="h-9 min-w-[36px] bg-v p-2 flex-between rounded-v">

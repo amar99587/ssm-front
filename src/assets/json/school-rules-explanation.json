@@ -27,6 +27,14 @@
     "title": "Ajouter un nouveau paiement",
     "description": ""
   },
+  "students:payments:payback": {
+    "title": "Avoir la permission de rembourser",
+    "description": ""
+  },
+  "students:payments:discount": {
+    "title": "Avoir la permission de remise",
+    "description": ""
+  },
   "students:presence:access": {
     "title": "Accès à la présence des élèves",
     "description": ""

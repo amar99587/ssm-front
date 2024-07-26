@@ -33,7 +33,7 @@
           <div v-if="more != payment.uid" class="truncate text-center px-1">{{ $toDate(payment.created_at) }}</div>
           <div v-if="more == payment.uid" class="truncate col-span-4 px-2 space-y-2">
             <div class="text-center">{{payment.course_name}}</div>
-            <div>prix des séances : {{(payment.price).toString().replace(/\.00$/, '')}} DZD</div>
+            <div>prix des séances : {{ +payment.price }} DZD</div>
             <div>nombre de séances : {{payment.quantity}}</div>
             <div>Total attendu : {{payment.quantity * payment.price}} DZD</div>
             <div>Total final : {{payment.total}} DZD</div>

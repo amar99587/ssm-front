@@ -8,10 +8,10 @@
             <form @submit.prevent="submitForm" class="grid md:grid-cols-5 gap-4">
                 <button @click="search()" class="hidden"/>
                 <div class="grid gap-2">
-                    <input-app label="depuis" :value="query.from" @update="query.from = $event" @change="search()" type="datetime-local" icon="fluent:calendar-24-filled" :max="query.to" />
+                    <input-app label="depuis" :value="query.from" @update="query.from = $event" @change="search()" type="datetime-local" icon="fluent:calendar-24-filled" :min="getLimit(query.to, -days40)" :max="query.to" />
                 </div>
                 <div class="grid gap-2">
-                    <input-app label="à" :value="query.to" @update="query.to = $event" @change="search()" type="datetime-local" icon="fluent:calendar-24-filled" :min="query.from" />
+                    <input-app label="à" :value="query.to" @update="query.to = $event" @change="search()" type="datetime-local" icon="fluent:calendar-24-filled" :min="query.from" :max="getLimit(query.from, +days40)" />
                 </div>
                 <div class="grid gap-2">
                     <input-app label="utilisateur" :value="query.user" @update="query.user = $event" type="search" icon="fluent:person-24-filled" placeholder="nom d'utilisateur" />
@@ -77,17 +77,17 @@
         </div>
         <h5 v-if="payments.rows.length" @scroll="loadmore" class="h-full space-y-4 overflow-y-auto">
             <h5 v-for="(item, index) in payments.rows" :key="index" @click="moreInfo = item.uid" class="bg-v bg-v-hover rounded-v p-2 grid grid-cols-3 sm:grid-cols-7 gap-4 text-center overflow-y-auto cursor-pointer smooth">
-                <div class="truncate">{{ item.user_code }}</div>
+                <div class="truncate uppercase">{{ item.user_code }}</div>
                 <div class="truncate">{{ item.course_name }}</div>                
                 <div class="hidden sm:block truncate">{{ item.teacher_name }}</div>
-                <div class="hidden sm:block truncate" :class="{ 'font-bold text-orange-500': item.price <= 0 }">{{ item.price.toString().replace(/\.00$/, '') }} <a class="text-xs font-medium">DZD</a></div>
+                <div class="hidden sm:block truncate" :class="{ 'font-bold text-orange-500': item.price <= 0 }">{{ +item.price }} <a class="text-xs font-medium">DZD</a></div>
                 <div class="hidden sm:block truncate" :class="{ 'font-bold text-orange-500': item.quantity <= 0 }">{{ item.quantity }}</div>
                 <div class="truncate" :class="{ 'font-bold text-blue-500': item.price * item.quantity > item.total, 'font-bold text-orange-500': item.total <= 0 }">{{ item.total }} <a class="text-xs font-medium">DZD</a></div>
                 <div class="hidden sm:block truncate">{{ toDate(item.created_at, "timestamp") }}</div>
                 <div v-if="moreInfo == item.uid" class="text-start grid col-span-full gap-2 sm:hidden">
                     <div class="w-full">Prof : {{ item.teacher_name }}</div>
                     <div class="w-full">nom d'utilisateur : {{ item.user_name }}</div>
-                    <div class="w-full">prix de la séance : {{ item.price }}</div>
+                    <div class="w-full">prix de la séance : {{ +item.price }} <a class="text-xs">DZD</a></div>
                     <div class="w-full">Quantité : {{ item.quantity }}</div>
                     <div class="w-full">{{ `${$t('created at')} : ${toDate(item.created_at, "timestamp")}` }}</div>
                 </div>
@@ -128,6 +128,9 @@ const query = ref({
     teacher: "",
 });
 
+const days40 = 1000 * 60 * 60 * 24 * 40;
+const getLimit = ( date, limit ) => toDate(new Date(date).getTime() + limit) + `T${limit > 0 ? '23:59' : '00:00'}`
+
 const payments = ref({
     statistic: {
         recipe: '0',
@@ -144,7 +147,7 @@ const search = async (first) => {
     query.value.from = query.value.from || toDate() + 'T00:00';
     query.value.to = query.value.to || toDate() + 'T23:59';
     const { data } = await api.post(`/v1/payments/get/school${ isLoadingMore.value ? `?offset=${payments.value.rows.length}` : '' }`, query.value);
-    console.log({ isLoadingMore: isLoadingMore.value, result: data.rows.length });
+    // console.log({ isLoadingMore: isLoadingMore.value, result: data.rows.length });
     if (data.statistic) {
         payments.value = data;
     } else {

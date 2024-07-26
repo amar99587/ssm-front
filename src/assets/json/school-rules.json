@@ -6,6 +6,8 @@
   "students:courses:access": false,
   "students:payments:access": false,
   "students:payments:add": false,
+  "students:payments:payback": false,
+  "students:payments:discount": false,
   "students:presence:access": false,
   "courses:access": false,
   "courses:create": false,

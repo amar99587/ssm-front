@@ -1,28 +1,5 @@
 <template>
   <div class="flex flex-col">
-    <div class="min-h-[96px] space-y-4">
-      <div class="flex-between">
-        <div class="text-pro">Emploi du Temps <a v-if="getting == 'timetables' && timetable.length" class="animate-pulse">...</a></div>
-        <!-- <icon-app v-if="loading" icon="svg-spinners:ring-resize" /> -->
-      </div>
-      <div class="flex-between gap-4 my-4">
-        <div @click="dialog.open()" class="btn-mini">
-          <icon-app :icon="getting == 'courses' ? 'svg-spinners:ring-resize' : 'fluent:add-12-filled'" class="w-3" />
-        </div>
-        <div class="w-full flex-between gap-4">
-          <input-app :value="query.course" @update="query.course = $event" icon="solar:document-bold" accessKey="s"
-            type="search" placeholder="nom du cours" />
-          <input-app :value="query.teacher" @update="query.teacher = $event" icon="fluent:person-24-filled"
-            placeholder="nom du prof" class="hidden sm:flex" />
-          <select-app :list="days" :value="current(query.date)?.day?.length ? current(query.date).day : query.day"
-            @update="(e) => { (query.day = Number(e)); (Number(e) ? '' : query.date = ''); }"
-            icon="fluent:calendar-ltr-24-filled" />
-          <input-app :value="query.date"
-            @update="(e) => { (query.date = e); (e.length ? query.day = current(e).day : ''); }"
-            icon="fluent:calendar-ltr-24-filled" class="hidden sm:flex" type="date" />
-        </div>
-      </div>
-    </div>
 
     <dialog-app :ref="dialog.item" title="ajouter une nouvelle séance" @close="dialog.close()" :canClose="!creating">
       <div class="space-y-4">
@@ -74,21 +51,48 @@
       <button @click="addLesson(newTimetable)" class="hidden" />
     </dialog-app>
 
+    <div class="min-h-[96px] space-y-4">
+      <div class="flex-between">
+        <div class="text-pro">Emploi du Temps <a v-if="getting == 'timetables' && timetable.length" class="animate-pulse">...</a></div>
+        <!-- <icon-app v-if="loading" icon="svg-spinners:ring-resize" /> -->
+      </div>
+      <div class="flex-between gap-4 my-4">
+        <div @click="dialog.open()" class="btn-mini">
+          <icon-app :icon="getting == 'courses' ? 'svg-spinners:ring-resize' : 'fluent:add-12-filled'" class="w-3" />
+        </div>
+        <div class="w-full flex-between gap-4">
+          <input-app :value="query.course" @update="query.course = $event" icon="solar:document-bold" accessKey="s"
+            type="search" placeholder="nom du cours" />
+          <input-app :value="query.teacher" @update="query.teacher = $event" icon="fluent:person-24-filled"
+            placeholder="nom du prof" class="hidden sm:flex" />
+          <select-app :list="days" :value="query.day"
+            @update="(e) => { (query.day = Number(e)); (Number(e) ? '' : query.date = ''); }"
+            icon="fluent:calendar-ltr-24-filled" />
+          <input-app :value="query.date"
+            @update="(e) => { (query.date = e); (e.length ? query.day = currentDay(e) : ''); }"
+            icon="fluent:calendar-ltr-24-filled" class="hidden sm:flex" type="date" />
+        </div>
+      </div>
+    </div>
+
     <div v-if="timetable.length" :class="{ 'opacity-60': getting == 'timetables' && timetable.length }" class="h-full space-y-4 overflow-y-auto smooth">
-      <div v-for="(courses, index) in second_array" class="grid gap-2">
+      <div v-for="day in query.day ? `${query.day}` : '1234567'" class="grid gap-2">
         <div class="flex-between gap-4">
           <h3 class="font-medium min-w-fit">
-            {{ query.day ? days[query.day] : days[index + 1] }}
+            {{ days[day] }}
           </h3>
           <div class="w-full border-b-[1px] dark:border-gray-700" />
         </div>
-        <div v-if="courses.length" class="grid sm:grid-cols-3 md:grid-cols-4 gap-4">
-          <div v-for="course in courses" class="group bg-v bg-v-hover rounded-v grid gap-2 p-3 smooth">
+        <div v-if="dayCourses(day).length" class="grid sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div v-for="course in dayCourses(day)" class="group bg-v bg-v-hover rounded-v grid gap-2 p-3 smooth">
             <div class="flex-between gap-2">
               <router-link
                 :to="$store.getters.permission('courses:information:access') ? `/school/${school.code}/courses/${course.uid}` : ''"
                 :class="{ 'cursor-pointer hover:link smooth': $store.getters.permission('courses:information:access') }"
-                class="font-medium truncate">{{ course.name }}</router-link>
+                class="font-medium truncate"
+              >
+                {{ course.name }}
+              </router-link>
               <h6 class="min-w-fit">{{ course.price }} DZD</h6>
             </div>
             <h6 class="px-4 truncate">{{ course.teacher }}</h6>
@@ -119,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import api from '@/plugins/axios.js';
 import store from '@/store';
 import { toDate } from '@/utilities/date';
@@ -138,7 +142,6 @@ const creating = ref(false);
 
 const courses = ref(store.state.courses);
 const days = ["Tous les jours", "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-// const days = ["All Days", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const timetable = ref([]);
 
 const newTimetable = ref({
@@ -176,7 +179,6 @@ onMounted(async () => {
   try {
     getting.value = 'timetables';
     const { data } = await api.get("/v1/timetables/get/" + school.code);
-    // console.log(data);
     timetable.value = data;
     store.commit("set", { key: "timetables", value: data });
     getting.value = false;
@@ -185,21 +187,16 @@ onMounted(async () => {
   }
 });
 
-const current = (dateString) => {
+const currentDay = dateString => {
   const date = new Date(dateString);
-  console.log(dateString);
-  return {
-    day: days.map(i => i.toLowerCase()).indexOf(date.toLocaleDateString('fr-FR', { weekday: 'long' })),
-    week: Math.ceil((date.getDate() - date.getDay()) / 7)
-  };
+  return days.map(i => i.toLowerCase()).indexOf(date.toLocaleDateString('fr-FR', { weekday: 'long' }));
 };
 
 const query = ref({
   school: school.code,
   course: "",
   teacher: "",
-  day: current(toDate()).day,
-  // week: current(toDate()).week,
+  day: currentDay(toDate()),
   date: toDate(),
   time: {
     from: "",
@@ -207,43 +204,22 @@ const query = ref({
   },
 });
 
-const filterResult = ({ name, teacher, date }) => {
+const dayCourses = day => {
   const getTime = (v) => new Date(v).getTime();
-  return name.toLowerCase().includes(query.value.course.toLowerCase())
-    && teacher.toLowerCase().includes(query.value.teacher.toLowerCase())
-    && (!date || getTime(date) >= getTime(query.value.date || toDate()));
+  return timetable.value?.filter(e => 
+    e.day == day &&
+    e.name.toLowerCase().includes(query.value.course.toLowerCase()) &&
+    e.teacher.toLowerCase().includes(query.value.teacher.toLowerCase()) &&
+    (!e.date || getTime(e.date) >= getTime(query.value.date || toDate()))
+  );
 };
-
-const search = computed(() => timetable.value.filter(course => filterResult(course)));
-
-const second_array = computed((first_array = search.value) => {
-  let result = [];
-  let allDays = first_array.filter(item => item.day == 0);
-  let notAllDays = first_array.filter(item => item.day != 0);
-
-  if (query.value.day) {
-    result[0] = [...allDays, ...notAllDays.filter(item => item.day == query.value.day)];
-    result[0].sort((a, b) => {
-      return new Date('1970/01/01 ' + a.start_at) - new Date('1970/01/01 ' + b.start_at);
-    });
-  } else {
-    for (let i = 0; i < 7; i++) {
-      result[i] = [...allDays, ...notAllDays.filter(item => item.day == i + 1)];
-      result[i].sort((a, b) => {
-        return new Date('1970/01/01 ' + a.start_at) - new Date('1970/01/01 ' + b.start_at);
-      });
-    }
-  }
-  return result;
-});
 
 const addLesson = async (e) => {
   if (!e.fixed) {
-    e.day = current(e.date).day;
+    e.day = currentDay(e.date);
   } else {
     delete e["date"];
   }
-  // console.log(e);
   if (validated({arr: Object.values(e)}) && window.confirm("Voulez-vous créer une nouvelle séance ?")) {
     try {
       creating.value = true;
@@ -252,17 +228,15 @@ const addLesson = async (e) => {
         const data = { ...e, ...e.course, start_at: e.start_at + ':00', end_at: e.end_at + ':00', timetable_uid: result.data.uid };
         delete data.course;
         timetable.value.push(data);
-        store.commit("add", {key: "timetables", value: data});
-        dialog.close();
-      } else {
-        console.log(result.data);
+        store.commit("add", { key: "timetables", value: timetable.value });
       }
+      dialog.close();
       creating.value = false;
     } catch (error) {
       console.log(error);
     }
   };
-}
+};
 
 const deleteLesson = async (uid) => {
   if (uid && window.confirm("Voulez-vous supprimer cette séance ?")) {
@@ -270,7 +244,6 @@ const deleteLesson = async (uid) => {
       loading.value = true;
       const result = await api.delete("/v1/timetables/delete/" + uid);
       timetable.value = timetable.value.filter(item => item.timetable_uid != uid);
-      console.log(result);
       loading.value = false;
     } catch (error) {
       console.log(error);

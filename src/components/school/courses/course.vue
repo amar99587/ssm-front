@@ -11,7 +11,7 @@
                 <div class="w-full grid grid-cols-2 gap-4">
                     <input-app :value="course.name" @update="course.name = $event" :readonly="!course.edit" icon="solar:document-bold" placeholder="nom complet du cours" class="col-span-2" />
                     <input-app :value="course.teacher" @update="course.teacher = $event" :readonly="!course.edit" :datalist="store.state.courses.map(({ teacher }) => teacher)" icon="fluent:person-24-filled" placeholder="nom du prof" />
-                    <input-app :value="course?.price?.toString().replace(/\.00$/, '')" @update="course.price = $event" :readonly="!course.edit" icon="solar:tag-price-bold" type="number" center placeholder="prix de séance" />
+                    <input-app :value="+course?.price" @update="course.price = $event" :readonly="!course.edit" icon="solar:tag-price-bold" type="number" center placeholder="prix de séance" />
                 </div>
                 <div class="flex-between text-center sm:text-left h-[36px]">
                     <h6 :class="{ 'hidden sm:block': course.edit }" class="first-letter:lowercase">{{ $t('created at') +' '+ $toDate(course?.created_at, 'timestamp') }}</h6>

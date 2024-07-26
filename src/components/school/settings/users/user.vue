@@ -24,15 +24,13 @@
     </div>
 
     <div v-if="link" class="h-full space-y-4 overflow-y-auto">
-      <div v-for="(permissions, category) in rulesGroup(link.rules)" :key="category"
-        class="w-full grid grid-cols-1 gap-4 border-v rounded-v smooth">
+      <div v-for="(permissions, category) in rulesGroup(link.rules)" :key="category" class="w-full grid grid-cols-1 gap-4 border-v rounded-v smooth">
         <h4 class="bg-v py-2 px-4">{{ translate(category) }}</h4>
         <div class="mx-4 grid gap-3 divide-y-2 divide-gray-200 dark:divide-gray-700 -translate-y-3">
           <div v-for="(permission, rule) in permissions" :key="rule" class="flex justify-between items-start pt-3">
             <div class="w-10/12 space-y-2">
               <h4 :class="{ 'mini-text': !link.rules[rule] }" class="smooth">{{ rulesExplanation[rule]?.title }}</h4>
-              <h6 v-if="rulesExplanation[rule]?.description.length" class="mini-text">{{
-          rulesExplanation[rule]?.description }}</h6>
+              <h6 v-if="rulesExplanation[rule]?.description.length" class="mini-text">{{ rulesExplanation[rule]?.description }}</h6>
             </div>
             <switch-app :value="link.type == 'owner' ? true : link.rules[rule]"
               @update="($store.getters.permission('settings:users:rules:edit') && $store.state.user.code != link.user_code && link.type != 'owner') && changeRule(category, rule, $event)" />
