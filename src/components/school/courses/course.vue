@@ -217,7 +217,7 @@ const changeColor = (color) => {
 
 const create = {
     lesson: async (e) => {
-        if (e.school && e.uid && window.confirm("Do you want to create a new session ?")) {
+        if (e.school && e.uid && window.confirm("Voulez-vous créer une nouvelle session ? note : assurez-vous toujours de créer cette session à la fin de la session réelle")) {
             try {
                 loading.value.lesson = true;
                 const { data } = await api.post("/v1/lessons/create", {school: e.school, course: e.uid});
