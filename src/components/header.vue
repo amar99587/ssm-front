@@ -45,12 +45,12 @@
                             <h5>Installer l'app</h5>
                             <icon-app icon="line-md:download-loop" size="24" />
                         </button>
-                        <a href="https://proecole.com/fr/index.html" target="_blank"
+                        <a href="whatsapp:send=+213698467691" target="_blank"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
                             <h5>aide</h5>
                             <icon-app icon="fluent:question-circle-12-filled" size="24" />
                         </a>
-                        <a href="https://proecole.com/fr/index.html" target="_blank"
+                        <a href="mailto:contact@proecole.com" target="_blank"
                             class="bg-v bg-v-hover p-2 flex-between rounded-v smooth">
                             <h5>contactez-nous</h5>
                             <icon-app icon="fluent:chat-12-filled" size="24" />
@@ -154,12 +154,12 @@
                                 <h5>Installer l'app</h5>
                                 <icon-app icon="line-md:download-loop" size="24" />
                             </a>
-                            <a href="https://proecole.com/fr/index.html" target="_blank"
+                            <a href="whatsapp:send=+213698467691" target="_blank"
                                 class="bg-v p-2 flex-between rounded-v">
                                 <h5>aide</h5>
                                 <icon-app icon="fluent:question-circle-12-filled" size="24" />
                             </a>
-                            <a href="https://proecole.com/fr/index.html" target="_blank"
+                            <a href="mailto:contact@proecole.com" target="_blank"
                                 class="bg-v p-2 flex-between rounded-v">
                                 <h5>contactez-nous</h5>
                                 <icon-app icon="fluent:chat-12-filled" size="24" />
