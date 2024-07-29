@@ -67,7 +67,7 @@
                     </div>
                     <div class="space-y-2 pt-4">
                         <btn-app text="payer" @click="payment(school.code)" :loading="creating" icon="twemoji:credit-card" class="mx-auto" dark />
-                        <h6 @click="() => { addPayment = false; creating = false; }" class="text-center mini-text cursor-pointer">cancel</h6>
+                        <h6 @click="() => { addPayment = false; creating = false; }" class="text-center mini-text cursor-pointer">annuler</h6>
                     </div>
                 </div>
                 <div v-else class="space-y-4">        
@@ -258,6 +258,7 @@ const payment = async code => {
         creating.value = true;
         editSchool.value = false;
         const result = await api.post("/v1/subscriptions/create", { school: code, subscription: subscription.value });
+        //console.log(result);
         const popup = window.open(result.data.checkout_url, 'popup', 'width=400,height=600');
         if (!popup) {
             window.location.href = result.data.checkout_url;
