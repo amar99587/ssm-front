@@ -21,7 +21,7 @@
                         <h4 class="uppercase tracking-wider">{{ school.code }}</h4>
                         <div class="space-y-2 pt-4">
                             <btn-app @click="update" text="enregistrer" icon="fluent:add-12-filled" class="mx-auto" dark :loading="creating" />
-                            <h6 @click="editSchool = false" class="text-center mini-text cursor-pointer">Annuler</h6>
+                            <h6 @click="editSchool = false" class="text-center mini-text cursor-pointer">annuler</h6>
                         </div>
                     </div>
                     <div v-else class="space-y-2">
@@ -290,6 +290,8 @@ const payment = async code => {
                         creating.value = false;
                         addPayment.value = false;
                         // console.log(school);
+                    } else {
+                        creating.value = false;
                     }
                 }
             }, 500);
